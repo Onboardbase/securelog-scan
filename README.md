@@ -16,7 +16,7 @@ To use `sls`,
 
 ---
 ```bash
-yarn add securelog-scan # npm i securelog-scan
+yarn global add securelog-scan # npm i g securelog-scan
 ```
 ---
 
