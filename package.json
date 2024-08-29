@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "bin/sls.js",
+  "author": {
+    "email": "iamnasirudeen@gmail.com",
+    "name": "Nasirudeen Olohundare",
+    "url": "https://github.com/iamnasirudeen"
+  },
   "bin": {
     "sls": "./bin/sls.js"
   },
