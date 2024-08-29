@@ -31,7 +31,7 @@ const configFile = options.config;
 const main = async () => {
   try {
     /**
-     * check if user has a cofig file and merge it with the existing configs
+     * check if user has a config file and merge it with the existing configs
      */
     const config = configHandler(configFile);
     if (config && config.exclude && config.exclude.paths)
