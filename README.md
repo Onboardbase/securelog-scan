@@ -1,6 +1,6 @@
-# Secure Log Scan
+# SecureLog Scan
 
-**Secure Log Scanner** is a tool designed to scan your codebase for potential secrets like API keys, tokens, and other sensitive information. It supports scanning `.env` files, parsing `.git` commit history, and analyzing all files line by line.
+**SecureLog Scan** is a tool designed to scan your codebase for potential secrets like API keys, tokens, and other sensitive information. It supports scanning `.env` files, parsing `.git` commit history, and analyzing all files line by line.
 
 ## Features
 
