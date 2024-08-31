@@ -9,6 +9,7 @@
 - **Customizable Rules**: Supports regex patterns for popular companies and services like AWS, Azure, Stripe, PayPal, and many more.
 - **Exclusion Options**: Allows users to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
+- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage.
 
 ## Install
 
@@ -38,19 +39,32 @@ sls --dir <directory>
 
 > Note: Secure Log Scan automatically defaults to `$cwd` if `--dir` flag is not provided
 
-### Excluding folders and extensions
+### Excluding folders and specifying maximum git commits
 
 You can exclude specific folders or file extensions using the `--exclude` option:
 
 ---
 
 ```bash
-sls --dir <directory> --exclude <folders>
+sls --dir <directory> --exclude <folders> --commits <100>
 ```
 
 ---
 
 - **`--exclude <folders>`**: Comma-separated list of folders to exclude from scanning.
+- **`--commits <number>`**: Number of most recent commits to scan (defaults to 100 most recent commits).
+
+### Scan Only Changed Files
+
+To scan only files and lines that have been changed in recent commits (useful in CI pipelines to only scan code changes):
+
+---
+
+```bash
+sls --changed
+```
+
+---
 
 ### Config file
 
