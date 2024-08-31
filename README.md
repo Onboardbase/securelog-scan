@@ -54,6 +54,8 @@ sls --dir <directory> --exclude <folders> --commits <100>
 - **`--exclude <folders>`**: Comma-separated list of folders to exclude from scanning.
 - **`--commits <number>`**: Number of most recent commits to scan (defaults to 100 most recent commits).
 
+---
+
 ### Scan Only Changed Files
 
 To scan only files and lines that have been changed in recent commits (useful in CI pipelines to only scan code changes):
