@@ -164,13 +164,13 @@ npx husky install
 Create a pre-commit hook to run the secret scanning CLI:
 
 ```bash
-npx husky add .husky/pre-commit "sls --commits 100"
+npx husky add .husky/pre-commit "sls --changed"
 ```
 
 Or create a pre-push hook:
 
 ```bash
-npx husky add .husky/pre-push "sls --commits 100"
+npx husky add .husky/pre-push "sls --changed"
 ```
 
 Replace `your-cli-command` with the actual name of your CLI tool.
