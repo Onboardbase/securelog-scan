@@ -15,11 +15,12 @@
 To use `sls`,
 
 ---
+
 ```bash
 yarn global add securelog-scan # npm i g securelog-scan
 ```
----
 
+---
 
 ## Usage
 
@@ -28,9 +29,11 @@ yarn global add securelog-scan # npm i g securelog-scan
 To scan your codebase, simply run:
 
 ---
+
 ```bash
 sls --dir <directory>
 ```
+
 ---
 
 > Note: Secure Log Scan automatically defaults to `$cwd` if `--dir` flag is not provided
@@ -40,9 +43,11 @@ sls --dir <directory>
 You can exclude specific folders or file extensions using the `--exclude` option:
 
 ---
+
 ```bash
 sls --dir <directory> --exclude <folders>
 ```
+
 ---
 
 - **`--exclude <folders>`**: Comma-separated list of folders to exclude from scanning.
@@ -52,9 +57,11 @@ sls --dir <directory> --exclude <folders>
 You can specify a path to a configuration file using the `--config` option. This file allows you to customize regex patterns and exclusion lists:
 
 ---
+
 ```bash
 sls  --config <path_to_config_file>
 ```
+
 ---
 
 ### Example config file
@@ -62,6 +69,7 @@ sls  --config <path_to_config_file>
 Here is an example of what your config file might look like:
 
 ---
+
 ```yaml
 regexes:
   AWS: /^[A-Za-z0-9]{43}$/
@@ -77,6 +85,7 @@ exclude:
     - ".jpg"
     - ".log"
 ```
+
 ---
 
 ### Config file
@@ -84,9 +93,11 @@ exclude:
 You can specify a path to a configuration file using the `--config` option:
 
 ---
+
 ```bash
 sls <directory> --config <path_to_config_file>
 ```
+
 ---
 
 - **`--config <path_to_config_file>`**: Path to a secure log scan config file.
@@ -94,9 +105,11 @@ sls <directory> --config <path_to_config_file>
 ### Example command
 
 ---
+
 ```bash
 sls --dir ./my-project --exclude dist,node_modules --config ./config.yml --commits 100
 ```
+
 ---
 
 # Output
@@ -109,6 +122,56 @@ The scanner will output potential secrets found, including the following details
 - The detector
 - Author information (name & email)
 - Commit title (if scanning Git history)
+
+## Git Hooks Integration with Husky
+
+To automatically run the secret scanning CLI before committing or pushing code, you can use Husky to manage Git hooks in your project.
+
+### 1. Install Husky
+
+First, install Husky as a development dependency:
+
+```bash
+npm install husky --save-dev
+```
+
+### 2. Initialize Husky
+
+Initialize Husky to create a `.husky` directory where the hooks will be managed:
+
+```bash
+npx husky install
+```
+
+### 3. Create Git Hooks
+
+Create a pre-commit hook to run the secret scanning CLI:
+
+```bash
+npx husky add .husky/pre-commit "sls --commits 100"
+```
+
+Or create a pre-push hook:
+
+```bash
+npx husky add .husky/pre-push "sls --commits 100"
+```
+
+Replace `your-cli-command` with the actual name of your CLI tool.
+
+### 4. Ensure Husky Runs on Install
+
+To ensure Husky is set up automatically when installing dependencies, add the following to your `package.json`:
+
+```json
+"scripts": {
+  "prepare": "husky install"
+}
+```
+
+### 5. Testing the Hooks
+
+After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run the secret scanning CLI, allowing or blocking the commit/push based on the scan results.
 
 # Contributing
 
