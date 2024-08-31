@@ -9,7 +9,7 @@
 - **Customizable Rules**: Supports regex patterns for popular companies and services like AWS, Azure, Stripe, PayPal, and many more.
 - **Exclusion Options**: Allows users to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
-- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage.
+- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage. 
 
 ## Install
 
@@ -56,7 +56,7 @@ sls --dir <directory> --exclude <folders> --commits <100>
 
 ---
 
-### Scan Only Changed Files
+### Scan only changed files
 
 To scan only files and lines that have been changed in recent commits (useful in CI pipelines to only scan code changes):
 
@@ -139,11 +139,11 @@ The scanner will output potential secrets found, including the following details
 - Author information (name & email)
 - Commit title (if scanning Git history)
 
-## Git Hooks Integration with Husky
+## Git-hooks integration with husky
 
 To automatically run the secret scanning CLI before committing or pushing code, you can use Husky to manage Git hooks in your project.
 
-### 1. Install Husky
+### 1. Install husky
 
 First, install Husky as a development dependency:
 
@@ -151,7 +151,7 @@ First, install Husky as a development dependency:
 npm install husky --save-dev
 ```
 
-### 2. Initialize Husky
+### 2. Initialize husky
 
 Initialize Husky to create a `.husky` directory where the hooks will be managed:
 
@@ -159,7 +159,7 @@ Initialize Husky to create a `.husky` directory where the hooks will be managed:
 npx husky install
 ```
 
-### 3. Create Git Hooks
+### 3. Create git-hooks
 
 Create a pre-commit hook to run the secret scanning CLI:
 
@@ -185,7 +185,7 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 }
 ```
 
-### 5. Testing the Hooks
+### 5. Testing the hooks
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run the secret scanning CLI, allowing or blocking the commit/push based on the scan results.
 
