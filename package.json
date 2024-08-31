@@ -1,6 +1,6 @@
 {
-  "name": "secure-log-scanner",
-  "version": "1.0.0",
+  "name": "securelog-scan",
+  "version": "1.0.2",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "bin/sls.js",
   "author": {
@@ -18,5 +18,8 @@
     "chalk": "^4",
     "commander": "^11.0.0",
     "yaml": "^2.5.0"
-  }
+  },
+  "repository": "https://github.com/Onboardbase/securelog-scan",
+  "bugs": "https://github.com/Onboardbase/securelog-scan/issues",
+  "homepage": "https://thesecurelog.com"
 }
