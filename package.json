@@ -1,6 +1,6 @@
 {
   "name": "securelog-scan",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "bin/sls.js",
   "author": {
