@@ -17,6 +17,7 @@ program
   .option("-c, --commits <number>", "Number of recent commits to scan", 100)
   .option("-d, --dir <string>", "Path to directory to scan")
   .option(", --config <string>", "A path to secure log scan config file", "")
+  .option("-d, --changed", "Only scan changed files and lines", false)
   .parse(process.argv);
 
 const options = program.opts();
@@ -45,13 +46,18 @@ const main = async () => {
     const userConfigRexes = (config && config.regexes) || {};
     const mergedRegexes = regexHandler(userConfigRexes);
 
-    // Scan the codebase
-    await scanDirectory(
-      startDirectory,
-      excludedFolders,
-      (config && config.exclude && config.exclude.extensions) || [],
-      mergedRegexes
-    );
+    /**
+     * only scan all directories if user did not specify to scan only changed file
+     */
+    if (!options.changed) {
+      // Scan the codebase
+      await scanDirectory(
+        startDirectory,
+        excludedFolders,
+        (config && config.exclude && config.exclude.extensions) || [],
+        mergedRegexes
+      );
+    }
 
     // Scan .git commits if present
     const gitDir = path.join(startDirectory, ".git");
@@ -59,8 +65,11 @@ const main = async () => {
       await scanGitCommitsForSecrets(
         startDirectory,
         commitLimit,
-        mergedRegexes
+        mergedRegexes,
+        options.changed
       );
+    } else {
+      console.log("Repository doesnt have a .git directory");
     }
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
