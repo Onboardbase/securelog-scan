@@ -69,7 +69,14 @@ const main = async () => {
         options.changed
       );
     } else {
-      console.log("Repository doesnt have a .git directory");
+      /**
+       * I assume its normal for users not to have git repo in their project so
+       * I only log a message if user specified `--changed` flag which is strict on
+       * only git scanning
+       */
+      if (options.changed) {
+        console.log("Repository doesnt have a .git directory");
+      }
     }
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
