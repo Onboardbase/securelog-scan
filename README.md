@@ -182,7 +182,7 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 
 ### 5. Testing the hooks
 
-After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run the secret scanning CLI, allowing or blocking the commit/push based on the scan results.
+After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
 
 # Contributing
 
