@@ -19,26 +19,32 @@ on:
         description: "Scan only changed files"
         required: false
         type: boolean
+
 jobs:
-  secret_scan:
+  scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout securelog-cli repository
+        uses: actions/checkout@v2
+        with:
+          repository: Onboardbase/securelog-scan
+          path: securelog-cli
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           node-version: "16"
 
-      - name: Install dependencies for CLI
-        working-directory: ./securelog-cli
+      - name: Install dependencies
+        working-directory: securelog-cli
         run: npm install
 
       - name: Run secret scan
-        working-directory: ${{ github.workspace }}
+        working-directory: securelog-cli
         run: |
-          CLI_COMMAND="node /bin/sls.js"
+          # Define the base CLI command
+          CLI_COMMAND="node bin/sls.js --dir ../" # the reason for the ../ is because the the cli has checked out to a new directory to install dependencies, it needs to step out of it to scan
 
           # Append --exclude option if provided
           if [ -n "${{ inputs.exclude }}" ]; then
