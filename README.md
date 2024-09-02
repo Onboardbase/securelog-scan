@@ -127,11 +127,11 @@ The scanner will output potential secrets found, including the following details
 - Author information (name & email)
 - Commit title (if scanning Git history)
 
-## Git-hooks integration with husky
+# Git-hooks integration with husky
 
 To automatically run the secret scanning CLI before committing or pushing code, you can use Husky to manage Git hooks in your project.
 
-### 1. Install husky
+## 1. Install husky
 
 First, install Husky as a development dependency:
 
@@ -139,7 +139,7 @@ First, install Husky as a development dependency:
 npm install husky --save-dev
 ```
 
-### 2. Initialize husky
+## 2. Initialize husky
 
 Initialize Husky to create a `.husky` directory where the hooks will be managed:
 
@@ -147,7 +147,7 @@ Initialize Husky to create a `.husky` directory where the hooks will be managed:
 npx husky install
 ```
 
-### 3. Create git-hooks
+## 3. Create git-hooks
 
 Create a pre-commit hook to run the secret scanning CLI:
 
@@ -163,7 +163,7 @@ npx husky add .husky/pre-push "sls --changed"
 
 Replace `your-cli-command` with the actual name of your CLI tool.
 
-### 4. Ensure Husky Runs on Install
+## 4. Ensure Husky Runs on Install
 
 To ensure Husky is set up automatically when installing dependencies, add the following to your `package.json`:
 
@@ -173,9 +173,10 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 }
 ```
 
-### 5. Testing the hooks
+## 5. Testing the hooks
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
+
 
 # CI Pipelines
 
