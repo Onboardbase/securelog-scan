@@ -102,22 +102,6 @@ exclude:
     - ".log"
 ```
 
----
-
-### Config file
-
-You can specify a path to a configuration file using the `--config` option:
-
----
-
-```bash
-sls <directory> --config <path_to_config_file>
-```
-
----
-
-- **`--config <path_to_config_file>`**: Path to a secure log scan config file.
-
 ### Example command
 
 ---
@@ -188,6 +172,33 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 ### 5. Testing the Hooks
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run the secret scanning CLI, allowing or blocking the commit/push based on the scan results.
+
+# CI Pipelines
+
+Securelog Scan allows you to run the to scan your codebase for secrets during CI processes. It provides flexibility for various configuration options such as excluding specific folders, limiting the number of commits to scan, and more.
+
+## Usage
+
+To use this workflow in your GitHub repository, reference it in your workflow file (e.g., `.github/workflows/secret-scan.yml`):
+
+```yaml
+name: Secret Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run_secret_scan:
+    uses: Onboardbase/securelog-scan/.github/workflows/securelog-scan.yml@main
+    with:
+      exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
+      commits: 100 # Number of recent commits to scan (optional)
+      config: ".securelog.yaml" # Optional path to a custom config file (optional)
+      changed: "true" # Set to "flase" to scan entire repository instead of just files that was changed (optional)
+```
 
 # Contributing
 
