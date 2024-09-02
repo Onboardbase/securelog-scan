@@ -5,11 +5,11 @@
 # Features
 
 - **Codebase Scanning**: Scans all files in the specified directory for potential secrets.
-- **Git History Scanning**: Analyzes `.git` commit history to detect secrets that might have been committed in the past and also the information of whoever commited the secret.
+- **Git History Scanning**: Analyzes `.git` commit history to detect secrets that might have been committed in the past and also the information of whoever committed the secret.
 - **Customizable Rules**: Supports regex patterns for popular companies and services like AWS, Azure, Stripe, PayPal, and many more.
-- **Exclusion Options**: Allows users to exclude specific folders and file extensions from scanning.
+- **Exclusion Options**: Users can to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
-- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage.
+- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage. 
 
 ## Install
 
@@ -37,7 +37,7 @@ sls --dir <directory>
 
 ---
 
-> Note: Secure Log Scan automatically defaults to `$cwd` if `--dir` flag is not provided
+> Note: Securelog scan automatically defaults to `$cwd` if `--dir` flag is not provided
 
 ### Excluding folders and specifying maximum git commits
 
@@ -56,7 +56,7 @@ sls --dir <directory> --exclude <folders> --commits <100>
 
 ---
 
-### Scan Only Changed Files
+### Scan only changed files
 
 To scan only files and lines that have been changed in recent commits (useful in CI pipelines to only scan code changes):
 
@@ -80,27 +80,39 @@ sls  --config <path_to_config_file>
 
 ---
 
-### Example config file
+---
+
+```bash
+sls <directory> --config <path_to_config_file>
+```
+
+---
+
+- **`--config <path_to_config_file>`**: Path to the config file.
+  
+### Example config.yml
 
 Here is an example of what your config file might look like:
+> Note: Adding custom regex patterns, paths or extensions to exclude is optional and should be used for your specific need only. By default, these have already been added to the library.
 
 ---
 
 ```yaml
 regexes:
-  AWS: /^[A-Za-z0-9]{43}$/
-  Onboardbase: /^[A-Za-z0-9]{43}$/
-  URL: /([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(:\d+)?(\/[^\s]*)?/
+  # AWS: /^[A-Za-z0-9]{43}$/
+  # Onboardbase: /^[A-Za-z0-9]{43}$/
+  # URL: /([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(:\d+)?(\/[^\s]*)?/
 exclude:
   paths:
-    - "node_modules"
-    - "dist"
-    - ".git"
+    # - "node_modules"
+    # - "dist"
+    # - ".git"
   extensions:
-    - ".png"
-    - ".jpg"
-    - ".log"
+    # - ".png"
+    # - ".jpg"
+    # - ".log"
 ```
+
 
 ### Example command
 
@@ -123,11 +135,11 @@ The scanner will output potential secrets found, including the following details
 - Author information (name & email)
 - Commit title (if scanning Git history)
 
-## Git Hooks Integration with Husky
+## Git-hooks integration with husky
 
 To automatically run the secret scanning CLI before committing or pushing code, you can use Husky to manage Git hooks in your project.
 
-### 1. Install Husky
+### 1. Install husky
 
 First, install Husky as a development dependency:
 
@@ -135,7 +147,7 @@ First, install Husky as a development dependency:
 npm install husky --save-dev
 ```
 
-### 2. Initialize Husky
+### 2. Initialize husky
 
 Initialize Husky to create a `.husky` directory where the hooks will be managed:
 
@@ -143,7 +155,7 @@ Initialize Husky to create a `.husky` directory where the hooks will be managed:
 npx husky install
 ```
 
-### 3. Create Git Hooks
+### 3. Create git-hooks
 
 Create a pre-commit hook to run the secret scanning CLI:
 
@@ -169,9 +181,9 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 }
 ```
 
-### 5. Testing the Hooks
+### 5. Testing the hooks
 
-After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run the secret scanning CLI, allowing or blocking the commit/push based on the scan results.
+After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
 
 # CI Pipelines
 
