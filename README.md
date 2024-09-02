@@ -80,6 +80,16 @@ sls  --config <path_to_config_file>
 
 ---
 
+---
+
+```bash
+sls <directory> --config <path_to_config_file>
+```
+
+---
+
+- **`--config <path_to_config_file>`**: Path to the config file.
+  
 ### Example config.yml
 
 Here is an example of what your config file might look like:
@@ -102,22 +112,6 @@ exclude:
     # - ".jpg"
     # - ".log"
 ```
-
----
-
-### Config file
-
-You can specify a path to a configuration file using the `--config` option:
-
----
-
-```bash
-sls <directory> --config <path_to_config_file>
-```
-
----
-
-- **`--config <path_to_config_file>`**: Path to the config file.
 
 ### Example command
 
