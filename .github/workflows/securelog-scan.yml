@@ -36,15 +36,10 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Install dependencies
-        working-directory: securelog-cli
-        run: npm install
-
       - name: Run secret scan
-        working-directory: securelog-cli
         run: |
           # Define the base CLI command
-          CLI_COMMAND="node bin/sls.js --dir ../" # the reason for the ../ is because the the cli has checked out to a new directory to install dependencies, it needs to step out of it to scan
+          CLI_COMMAND="npx securelog-scan"
 
           # Append --exclude option if provided
           if [ -n "${{ inputs.exclude }}" ]; then
