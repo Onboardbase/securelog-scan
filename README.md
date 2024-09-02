@@ -37,7 +37,7 @@ sls --dir <directory>
 
 ---
 
-> Note: Securelog acan automatically defaults to `$cwd` if `--dir` flag is not provided
+> Note: Securelog scan automatically defaults to `$cwd` if `--dir` flag is not provided
 
 ### Excluding folders and specifying maximum git commits
 
