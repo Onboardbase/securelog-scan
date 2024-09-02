@@ -117,7 +117,7 @@ sls <directory> --config <path_to_config_file>
 
 ---
 
-- **`--config <path_to_config_file>`**: Path to a secure log scan config file.
+- **`--config <path_to_config_file>`**: Path to the config file.
 
 ### Example command
 
