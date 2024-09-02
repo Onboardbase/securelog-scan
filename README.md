@@ -9,7 +9,7 @@
 - **Customizable Rules**: Supports regex patterns for popular companies and services like AWS, Azure, Stripe, PayPal, and many more.
 - **Exclusion Options**: Users can to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
-- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage. 
+- **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage.
 
 ## Install
 
@@ -80,19 +80,12 @@ sls  --config <path_to_config_file>
 
 ---
 
----
-
-```bash
-sls <directory> --config <path_to_config_file>
-```
-
----
-
 - **`--config <path_to_config_file>`**: Path to the config file.
-  
+
 ### Example config.yml
 
 Here is an example of what your config file might look like:
+
 > Note: Adding custom regex patterns, paths or extensions to exclude is optional and should be used for your specific need only. By default, these have already been added to the library.
 
 ---
@@ -183,6 +176,33 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 ### 5. Testing the hooks
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
+
+# CI Pipelines
+
+Securelog Scan allows you to run the to scan your codebase for secrets during CI processes. It provides flexibility for various configuration options such as excluding specific folders, limiting the number of commits to scan, and more.
+
+## Usage
+
+To use this workflow in your GitHub repository, reference it in your workflow file (e.g., `.github/workflows/secret-scan.yml`):
+
+```yaml
+name: Secret Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run_secret_scan:
+    uses: Onboardbase/securelog-scan/.github/workflows/securelog-scan.yml@main
+    with:
+      exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
+      commits: 100 # Number of recent commits to scan (optional)
+      config: ".securelog.yaml" # Optional path to a custom config file (optional)
+      changed: "true" # Set to "flase" to scan entire repository instead of just files that was changed (optional)
+```
 
 # Contributing
 
