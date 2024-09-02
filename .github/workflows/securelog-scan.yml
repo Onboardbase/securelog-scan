@@ -1,4 +1,4 @@
-name: SecureLog Scan
+name: Securelog Scan
 
 on:
   workflow_call:
@@ -19,33 +19,33 @@ on:
         description: "Scan only changed files"
         required: false
         type: boolean
-      cli-path:
-        description: "Path to the CLI tool"
-        required: false
-        type: string
-        default: "./bin/sls.js"
 
 jobs:
   secret-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout reusable workflow repository
         uses: actions/checkout@v3
+        with:
+          repository: Onboardbase/securelog-scan
+          path: securelog-cli
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "16" # Specify the Node.js version
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./securelog-cli
 
       - name: Run secret scan
         run: |
-          CLI_COMMAND="node ${{ inputs.cli-path }}"
+          CLI_COMMAND="node securelog-directory/bin/sls.js"
           if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
           if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
           if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
           if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
           eval "$CLI_COMMAND"
+        working-directory: ./securelog-cli
