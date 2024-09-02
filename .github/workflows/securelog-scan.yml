@@ -21,31 +21,31 @@ on:
         type: boolean
 
 jobs:
-  secret-scan:
+  scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout reusable workflow repository
-        uses: actions/checkout@v3
+      - name: Checkout securelog-cli repository
+        uses: actions/checkout@v2
         with:
           repository: Onboardbase/securelog-scan
           path: securelog-cli
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: "16" # Specify the Node.js version
+          node-version: "16"
 
       - name: Install dependencies
+        working-directory: securelog-cli
         run: npm install
-        working-directory: ./securelog-cli
 
       - name: Run secret scan
+        working-directory: securelog-cli
         run: |
-          CLI_COMMAND="node securelog-cli/bin/sls.js"
+          CLI_COMMAND="node bin/sls.js"
           if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
           if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
           if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
           if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
           eval "$CLI_COMMAND"
-        working-directory: ./securelog-cli
