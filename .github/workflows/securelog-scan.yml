@@ -42,7 +42,7 @@ jobs:
 
       - name: Run secret scan
         run: |
-          CLI_COMMAND="node securelog-directory/bin/sls.js"
+          CLI_COMMAND="node securelog-cli/bin/sls.js"
           if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
           if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
           if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
