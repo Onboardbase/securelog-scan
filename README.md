@@ -80,7 +80,9 @@ sls  --config <path_to_config_file>
 
 ---
 
-### Example config file
+- **`--config <path_to_config_file>`**: Path to the config file.
+
+### Example config.yml
 
 Here is an example of what your config file might look like:
 
