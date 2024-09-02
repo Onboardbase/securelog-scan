@@ -5,9 +5,9 @@
 # Features
 
 - **Codebase Scanning**: Scans all files in the specified directory for potential secrets.
-- **Git History Scanning**: Analyzes `.git` commit history to detect secrets that might have been committed in the past and also the information of whoever commited the secret.
+- **Git History Scanning**: Analyzes `.git` commit history to detect secrets that might have been committed in the past and also the information of whoever committed the secret.
 - **Customizable Rules**: Supports regex patterns for popular companies and services like AWS, Azure, Stripe, PayPal, and many more.
-- **Exclusion Options**: Allows users to exclude specific folders and file extensions from scanning.
+- **Exclusion Options**: Users can to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
 - **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage. 
 
