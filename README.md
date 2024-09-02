@@ -89,18 +89,18 @@ Here is an example of what your config file might look like:
 
 ```yaml
 regexes:
-  AWS: /^[A-Za-z0-9]{43}$/
-  Onboardbase: /^[A-Za-z0-9]{43}$/
-  URL: /([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(:\d+)?(\/[^\s]*)?/
+  # AWS: /^[A-Za-z0-9]{43}$/
+  # Onboardbase: /^[A-Za-z0-9]{43}$/
+  # URL: /([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(:\d+)?(\/[^\s]*)?/
 exclude:
   paths:
-    - "node_modules"
-    - "dist"
-    - ".git"
+    # - "node_modules"
+    # - "dist"
+    # - ".git"
   extensions:
-    - ".png"
-    - ".jpg"
-    - ".log"
+    # - ".png"
+    # - ".jpg"
+    # - ".log"
 ```
 
 ---
