@@ -42,4 +42,33 @@ jobs:
 
       - name: Run secret scan
         working-directory: securelog-cli
-        run: node ./bin/sls.js ${inputs.commits && `--commits ${inputs.commits}`} ${inputs.exclude && `--exclude ${inputs.exclude}`} ${inputs.config && `--config ${inputs.config}`}
+        run: |
+          # Define the base CLI command
+          CLI_COMMAND="node bin/sls.js"
+
+          # Append --exclude option if provided
+          if [ -n "${{ inputs.exclude }}" ]; then
+            CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"
+          fi
+
+          # Append --commits option if provided
+          if [ -n "${{ inputs.commits }}" ]; then
+            CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"
+          fi
+
+          # Append --config option if provided
+          if [ -n "${{ inputs.config }}" ]; then
+            CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"
+          fi
+
+          # Append --changed option if true
+          if [ "${{ inputs.changed }}" = "true" ]; then
+            CLI_COMMAND="$CLI_COMMAND --changed"
+          fi
+
+          # Debug output to verify the final command
+          echo "Running command: $CLI_COMMAND"
+
+          # Execute the command
+          eval "$CLI_COMMAND"
+        shell: /usr/bin/bash -e {0}
