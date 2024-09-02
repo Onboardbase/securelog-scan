@@ -1,0 +1,51 @@
+name: SecureLog Scan
+
+on:
+  workflow_call:
+    inputs:
+      exclude:
+        description: "Comma-separated list of folders to exclude from scanning"
+        required: false
+        type: string
+      commits:
+        description: "Number of recent commits to scan"
+        required: false
+        type: number
+      config:
+        description: "Path to secure log scan config file"
+        required: false
+        type: string
+      changed:
+        description: "Scan only changed files"
+        required: false
+        type: boolean
+      cli-path:
+        description: "Path to the CLI tool"
+        required: false
+        type: string
+        default: "./bin/sls.js"
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run secret scan
+        run: |
+          CLI_COMMAND="node ${{ inputs.cli-path }}"
+          if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
+          if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
+          if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
+          if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
+          eval "$CLI_COMMAND"
