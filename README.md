@@ -80,7 +80,7 @@ sls  --config <path_to_config_file>
 
 ---
 
-### Example config file
+### Example config.yml
 
 Here is an example of what your config file might look like:
 > Note: Adding custom regex patterns, paths or extensions to exclude is optional and should be used for your specific need only. By default, these have already been added to the library.
