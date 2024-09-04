@@ -1,19 +1,15 @@
-name: Deploy to npm
 on:
   push:
-    tags:
-      - "v*"
+    branches: main
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: "16" # Specify the version of Node.js
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Set this in the GitHub repository secrets
-        run: npm publish
+          node-version: "18"
+      - run: yarn install
+      - uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
