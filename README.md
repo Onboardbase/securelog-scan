@@ -39,6 +39,16 @@ sls --dir <directory>
 
 ---
 
+You can also scan your codebase just by specifying the public URL (only github, gitlab & bitbucket URLs for now)
+
+---
+
+```bash
+sls --url https://github.com/username/my-public-repository
+```
+
+---
+
 > Note: Securelog scan automatically defaults to `$cwd` if `--dir` flag is not provided
 
 ### Excluding folders and specifying maximum git commits
@@ -178,7 +188,6 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 ## 5. Testing the hooks
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
-
 
 # CI Pipelines
 

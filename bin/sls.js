@@ -7,6 +7,7 @@ const { scanGitCommitsForSecrets } = require("../lib/gitScanner");
 const { program } = require("commander");
 const { configHandler } = require("../lib/configHandler");
 const { regexHandler } = require("../lib/regexPatterns");
+const { analyzeRepository } = require("../lib/urlScanner");
 
 program
   .option(
@@ -18,6 +19,7 @@ program
   .option("-d, --dir <string>", "Path to directory to scan")
   .option(", --config <string>", "A path to secure log scan config file", "")
   .option("-d, --changed", "Only scan changed files and lines", false)
+  .option(", --url <url>", "A link to a Github, Gitlab or BitBucket URL", "")
   .parse(process.argv);
 
 const options = program.opts();
@@ -45,6 +47,23 @@ const main = async () => {
      */
     const userConfigRexes = (config && config.regexes) || {};
     const mergedRegexes = regexHandler(userConfigRexes);
+    const excludedExtensions =
+      (config && config.exclude && config.exclude.extensions) || [];
+
+    /**
+     * if user is trying to scan URL, --changed flag is not useful, also
+     * git scanning is not useful as we will be scanning the entire codebase, reason is
+     * we download the zipped file of the repo from their git provider which doesnt include .git (git information)
+     * anymore
+     */
+    if (options.url) {
+      return await analyzeRepository(
+        options.url,
+        excludedFolders,
+        excludedExtensions,
+        mergedRegexes
+      );
+    }
 
     /**
      * only scan all directories if user did not specify to scan only changed file
@@ -54,7 +73,7 @@ const main = async () => {
       await scanDirectory(
         startDirectory,
         excludedFolders,
-        (config && config.exclude && config.exclude.extensions) || [],
+        excludedExtensions,
         mergedRegexes
       );
     }
