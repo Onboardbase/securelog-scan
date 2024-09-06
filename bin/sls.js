@@ -85,7 +85,8 @@ const main = async () => {
         startDirectory,
         commitLimit,
         mergedRegexes,
-        options.changed
+        options.changed,
+        excludedFolders
       );
     } else {
       /**
