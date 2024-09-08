@@ -79,25 +79,25 @@ const main = async () => {
     }
 
     // Scan .git commits if present
-    const gitDir = path.join(startDirectory, ".git");
-    if (fs.existsSync(gitDir)) {
-      await scanGitCommitsForSecrets(
-        startDirectory,
-        commitLimit,
-        mergedRegexes,
-        options.changed,
-        excludedFolders
-      );
-    } else {
-      /**
-       * I assume its normal for users not to have git repo in their project so
-       * I only log a message if user specified `--changed` flag which is strict on
-       * only git scanning
-       */
-      if (options.changed) {
-        console.log("Repository doesnt have a .git directory");
-      }
-    }
+    // const gitDir = path.join(startDirectory, ".git");
+    // if (fs.existsSync(gitDir)) {
+    //   await scanGitCommitsForSecrets(
+    //     startDirectory,
+    //     commitLimit,
+    //     mergedRegexes,
+    //     options.changed,
+    //     excludedFolders
+    //   );
+    // } else {
+    //   /**
+    //    * I assume its normal for users not to have git repo in their project so
+    //    * I only log a message if user specified `--changed` flag which is strict on
+    //    * only git scanning
+    //    */
+    //   if (options.changed) {
+    //     console.log("Repository doesnt have a .git directory");
+    //   }
+    // }
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
   }

@@ -14,6 +14,8 @@
     "start": "node bin/sls.js"
   },
   "dependencies": {
+    "ahocorasick": "^1.0.2",
+    "axios": "^1.7.7",
     "chalk": "^4",
     "commander": "^11.0.0",
     "yaml": "^2.5.0"

@@ -20,7 +20,7 @@ To use `sls`,
 ---
 
 ```bash
-yarn global add securelog-scan # npm i g securelog-scan
+yarn global add securelog-scan # npm i -g securelog-scan
 ```
 
 ---
@@ -213,7 +213,7 @@ jobs:
       exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
       commits: 100 # Number of recent commits to scan (optional)
       config: ".securelog.yaml" # Optional path to a custom config file (optional)
-      changed: "true" # Set to "flase" to scan entire repository instead of just files that was changed (optional)
+      changed: "true" # Set to "false" to scan entire repository instead of just files that was changed (optional)
 ```
 
 # Contributing
