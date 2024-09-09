@@ -20,6 +20,11 @@ program
   .option(", --config <string>", "A path to secure log scan config file", "")
   .option("-d, --changed", "Only scan changed files and lines", false)
   .option(", --url <url>", "A link to a Github, Gitlab or BitBucket URL", "")
+  .option(
+    "-v, --verify <boolean>",
+    "Should be specified if secrets should be verified",
+    false
+  )
   .parse(process.argv);
 
 const options = program.opts();
@@ -51,18 +56,15 @@ const main = async () => {
       (config && config.exclude && config.exclude.extensions) || [];
 
     /**
-     * if user is trying to scan URL, --changed flag is not useful, also
-     * git scanning is not useful as we will be scanning the entire codebase, reason is
-     * we download the zipped file of the repo from their git provider which doesnt include .git (git information)
-     * anymore
+     * if user is trying to scan URL, --changed flag is not respected anymore
      */
     if (options.url) {
-      return await analyzeRepository(
-        options.url,
+      return await analyzeRepository({
+        url: options.url,
         excludedFolders,
         excludedExtensions,
-        mergedRegexes
-      );
+        verify: options.verify,
+      });
     }
 
     /**
@@ -70,34 +72,34 @@ const main = async () => {
      */
     if (!options.changed) {
       // Scan the codebase
-      await scanDirectory(
+      await scanDirectory({
         startDirectory,
         excludedFolders,
         excludedExtensions,
-        mergedRegexes
-      );
+        verify: options.verify,
+      });
     }
 
     // Scan .git commits if present
-    // const gitDir = path.join(startDirectory, ".git");
-    // if (fs.existsSync(gitDir)) {
-    //   await scanGitCommitsForSecrets(
-    //     startDirectory,
-    //     commitLimit,
-    //     mergedRegexes,
-    //     options.changed,
-    //     excludedFolders
-    //   );
-    // } else {
-    //   /**
-    //    * I assume its normal for users not to have git repo in their project so
-    //    * I only log a message if user specified `--changed` flag which is strict on
-    //    * only git scanning
-    //    */
-    //   if (options.changed) {
-    //     console.log("Repository doesnt have a .git directory");
-    //   }
-    // }
+    const gitDir = path.join(startDirectory, ".git");
+    if (fs.existsSync(gitDir)) {
+      await scanGitCommitsForSecrets({
+        startDirectory,
+        commitLimit,
+        changed: options.changed,
+        excludedFolders,
+        verify: options.verify,
+      });
+    } else {
+      /**
+       * I assume its normal for users not to have git repo in their project so
+       * I only log a message if user specified `--changed` flag which is strict on
+       * only git scanning
+       */
+      if (options.changed) {
+        console.log("Repository doesnt have a .git directory");
+      }
+    }
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
   }
