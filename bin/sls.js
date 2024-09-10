@@ -6,8 +6,9 @@ const { scanDirectory } = require("../lib/fileScanner");
 const { scanGitCommitsForSecrets } = require("../lib/gitScanner");
 const { program } = require("commander");
 const { configHandler } = require("../lib/configHandler");
-const { regexHandler } = require("../lib/regexPatterns");
+const { buildCustomDetectors } = require("../lib/regexPatterns");
 const { analyzeRepository } = require("../lib/urlScanner");
+const { AhoCorasickCore } = require("../lib/ahocorasick");
 
 program
   .option(
@@ -50,8 +51,9 @@ const main = async () => {
     /**
      * merge default regex alongside users custom regex
      */
-    const userConfigRexes = (config && config.regexes) || {};
-    const mergedRegexes = regexHandler(userConfigRexes);
+    const userConfigRexes = (config && config.detectors) || {};
+    const customDetectors = buildCustomDetectors(userConfigRexes);
+
     const excludedExtensions =
       (config && config.exclude && config.exclude.extensions) || [];
 
@@ -77,6 +79,7 @@ const main = async () => {
         excludedFolders,
         excludedExtensions,
         verify: options.verify,
+        customDetectors,
       });
     }
 
