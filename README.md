@@ -208,7 +208,7 @@ on:
 
 jobs:
   run_secret_scan:
-    uses: Onboardbase/securelog-scan/.github/workflows/securelog-scan.yml@main
+    uses: Onboardbase/securelog-scan@main
     with:
       exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
       commits: 100 # Number of recent commits to scan (optional)
