@@ -2,15 +2,18 @@
 
 const path = require("path");
 const fs = require("fs");
+const pkg = require("../package.json");
 const { scanDirectory } = require("../lib/fileScanner");
 const { scanGitCommitsForSecrets } = require("../lib/gitScanner");
 const { program } = require("commander");
 const { configHandler } = require("../lib/configHandler");
 const { buildCustomDetectors } = require("../lib/regexPatterns");
 const { analyzeRepository } = require("../lib/urlScanner");
-const { AhoCorasickCore } = require("../lib/ahocorasick");
 
 program
+  .name(pkg.name)
+  .description(pkg.description)
+  .version(pkg.version)
   .option(
     "-e, --exclude <folders>",
     "Comma-separated list of folders to exclude from scanning",
