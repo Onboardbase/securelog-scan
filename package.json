@@ -21,7 +21,9 @@
     "commander": "^11.0.0",
     "figlet": "^1.7.0",
     "mongodb": "^6.8.1",
+    "mysql": "^2.18.1",
     "re2": "^1.21.4",
+    "redis": "^4.7.0",
     "yaml": "^2.5.0"
   },
   "resolutions": {
