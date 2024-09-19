@@ -1,6 +1,6 @@
 {
   "name": "securelog-scan",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "bin/sls.js",
   "author": {
@@ -14,9 +14,21 @@
     "start": "node bin/sls.js"
   },
   "dependencies": {
+    "ahocorasick": "^1.0.2",
+    "axios": "^1.7.7",
     "chalk": "^4",
+    "cli-table3": "^0.6.5",
     "commander": "^11.0.0",
+    "mongodb": "^6.8.1",
+    "mysql2": "^3.11.3",
+    "pg": "^8.13.0",
+    "re2": "^1.21.4",
+    "redis": "^4.7.0",
     "yaml": "^2.5.0"
+  },
+  "resolutions": {
+    "strip-ansi": "6.0.0",
+    "string-width": "4.2.3"
   },
   "repository": "https://github.com/Onboardbase/securelog-scan",
   "bugs": "https://github.com/Onboardbase/securelog-scan/issues",
