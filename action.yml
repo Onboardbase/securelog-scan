@@ -1,6 +1,8 @@
-name: Securelog Scan
-description: Scan your codebase, team's logs, build environments, repos & CI pipelines for leaked secrets and API tokens.
-
+name: "Securelog Scan"
+description: "Scan your codebase, team's logs, build environments, repos & CI pipelines for leaked secrets and API tokens."
+branding:
+  icon: "shield"
+  color: "yellow"
 on:
   workflow_call:
     inputs:
