@@ -1,4 +1,5 @@
 name: Securelog Scan
+description: Scan your codebase, team's logs, build environments, repos & CI pipelines for leaked secrets and API tokens.
 
 on:
   workflow_call:
