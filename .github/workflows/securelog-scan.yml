@@ -1,0 +1,47 @@
+name: Securelog Scan
+
+on:
+  workflow_call:
+    inputs:
+      exclude:
+        description: "Comma-separated list of folders to exclude from scanning"
+        required: false
+        type: string
+      commits:
+        description: "Number of recent commits to scan"
+        required: false
+        type: number
+      config:
+        description: "Path to secure log scan config file"
+        required: false
+        type: string
+      changed:
+        description: "Scan only changed files"
+        required: false
+        type: boolean
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout securelog-cli repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Run secret scan
+        working-directory: ${{ github.workspace }}
+        run: |
+          CLI_COMMAND="npx securelog-scan"
+          if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
+          if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
+          if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
+          if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
+          echo "Running: $CLI_COMMAND"
+          eval "$CLI_COMMAND"
+        env:
+          FORCE_COLOR: "1"
