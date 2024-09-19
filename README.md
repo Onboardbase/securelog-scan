@@ -12,6 +12,7 @@ Check out [cleanlogs](https://github.com/Onboardbase/secure-log)
 - **Exclusion Options**: Users can to exclude specific folders and file extensions from scanning.
 - **Parallel Processing**: Efficiently scans large repositories using parallel processing to streamline file scanning.
 - **Selective Scanning**: Scan only files that have changed in recent commits, optimizing CI/CD pipeline usage.
+- **Verify Secrets**: Verify secrets against their service provider to know if secret is still valid
 
 ## Install
 
@@ -34,7 +35,7 @@ To scan your codebase, simply run:
 ---
 
 ```bash
-sls --dir <directory>
+sls scan --dir <directory>
 ```
 
 ---
@@ -44,7 +45,7 @@ You can also scan your codebase just by specifying the public URL (only github, 
 ---
 
 ```bash
-sls --url https://github.com/username/my-public-repository
+sls scan --url https://github.com/username/my-public-repository
 ```
 
 ---
@@ -58,7 +59,7 @@ You can exclude specific folders or file extensions using the `--exclude` option
 ---
 
 ```bash
-sls --dir <directory> --exclude <folders> --commits <100>
+sls scan --dir <directory> --exclude <folders> --commits <100>
 ```
 
 ---
@@ -75,7 +76,7 @@ To scan only files and lines that have been changed in recent commits (useful in
 ---
 
 ```bash
-sls --changed
+sls scan --changed
 ```
 
 ---
@@ -87,7 +88,7 @@ You can specify a path to a configuration file using the `--config` option. This
 ---
 
 ```bash
-sls  --config <path_to_config_file>
+sls scan --config <path_to_config_file>
 ```
 
 ---
@@ -103,10 +104,19 @@ Here is an example of what your config file might look like:
 ---
 
 ```yaml
-regexes:
-  # AWS: /^[A-Za-z0-9]{43}$/
-  # Onboardbase: /^[A-Za-z0-9]{43}$/
-  # URL: /([a-zA-Z0-9-]+\.[a-zA-Z]{2,})(:\d+)?(\/[^\s]*)?/
+detectors:
+  # paystack:
+  #   regex: "\\bsk\\_[a-z]{1,}\\_[A-Za-z0-9]{40}\\b"
+  #   keywords: ["paystack"]
+  #   detectorType: "Paystack"
+
+  # mailgun:
+  #   regex:
+  #     "Original Token": "\\b([a-zA-Z-0-9]{72})\\b"
+  #     "Key-Mailgun Token": "\\b(key-[a-z0-9]{32})\\b"
+  #     "Hex Mailgun Token": "\\b([a-f0-9]{32}-[a-f0-9]{8}-[a-f0-9]{8})\\b"
+  #   keywords: ["mailgun"]
+  #   detectorType: "Mailgun"
 exclude:
   paths:
     # - "node_modules"
@@ -123,7 +133,7 @@ exclude:
 ---
 
 ```bash
-sls --dir ./my-project --exclude dist,node_modules --config ./config.yml --commits 100
+sls scan --dir ./my-project --exclude dist,node_modules --config ./config.yml --commits 100
 ```
 
 ---
@@ -164,13 +174,13 @@ npx husky install
 Create a pre-commit hook to run the secret scanning CLI:
 
 ```bash
-npx husky add .husky/pre-commit "sls --changed"
+npx husky add .husky/pre-commit "sls scan --changed"
 ```
 
 Or create a pre-push hook:
 
 ```bash
-npx husky add .husky/pre-push "sls --changed"
+npx husky add .husky/pre-push "sls scan --changed"
 ```
 
 Replace `your-cli-command` with the actual name of your CLI tool.
@@ -214,6 +224,31 @@ jobs:
       commits: 100 # Number of recent commits to scan (optional)
       config: ".securelog.yaml" # Optional path to a custom config file (optional)
       changed: "true" # Set to "false" to scan entire repository instead of just files that was changed (optional)
+      mask: "true" # that is mask secret value e.g sk_******
+      verify: "true" # that is verify potential secrets against their service provider
+```
+
+# Analyzers
+
+We have implemented various analyzers to help detect and analyze potential secrets within different types of services and platforms. Each analyzer is designed to handle specific types of secrets and configurations, ensuring that sensitive information is detected and managed appropriately. Below is an overview of the analyzers we have implemented
+
+## Analyzer Descriptions
+
+| **Analyzer**   | **Command**                                             | **Description**                                                                                                                        |
+| -------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **MongoDB**    | `sls analyze mongodb --secret "<connection-string>"`    | Inspects MongoDB connection strings, connects to the database, and retrieves information about collections, users, and databases.      |
+| **MySQL**      | `sls analyze mysql --secret "<connection-string>"`      | Inspects MySQL connection strings, connects to the database, and retrieves information about tables, databases, and user grants.       |
+| **PostgreSQL** | `sls analyze postgresql --secret "<connection-string>"` | Inspects PostgreSQL connection strings, connects to the database, and retrieves information about databases, tables, and user roles.   |
+| **GitHub**     | `sls analyze github --secret "<api-key>"`               | Inspects GitHub API keys, attempts to access user data, and retrieves information about user details and access scopes.                |
+| **GitLab**     | `sls analyze gitlab --secret "<api-key>"`               | Inspects GitLab API keys, attempts to access user and project data, and retrieves information about user roles and project visibility. |
+| **Slack**      | `sls analyze slack --secret "<api-token>"`              | Inspects Slack API tokens, attempts to access workspace data, and retrieves information about channels, users, and workspace settings. |
+
+## Command Usage
+
+To run an analyzer, use the following command:
+
+```bash
+sls analyze <analyzer> --secret "<api key or connection string>" # slack, mongodb, mysql, postgresql, github, gitlab,
 ```
 
 # Contributing
