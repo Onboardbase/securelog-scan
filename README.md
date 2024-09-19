@@ -52,20 +52,22 @@ sls scan --url https://github.com/username/my-public-repository
 
 > Note: Securelog scan automatically defaults to `$cwd` if `--dir` flag is not provided
 
-### Excluding folders and specifying maximum git commits
+### Excluding folders, specifying maximum git commits, masking and verifying secrets
 
 You can exclude specific folders or file extensions using the `--exclude` option:
 
 ---
 
 ```bash
-sls scan --dir <directory> --exclude <folders> --commits <100>
+sls scan --dir <directory> --exclude <folders> --commits <100> --verify <false> -- mask <true>
 ```
 
 ---
 
 - **`--exclude <folders>`**: Comma-separated list of folders to exclude from scanning.
 - **`--commits <number>`**: Number of most recent commits to scan (defaults to 100 most recent commits).
+- **`--mask <boolean>`**: Whether secret should be masked or not (default is false)
+- **`--verify <boolean>`**: Specify this if you want secrets to be verified against their service provider
 
 ---
 

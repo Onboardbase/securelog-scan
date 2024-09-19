@@ -19,6 +19,14 @@ on:
         description: "Scan only changed files"
         required: false
         type: boolean
+      mask:
+        description: "Mask secret values"
+        required: false
+        type: boolean
+      verify:
+        description: "Verify secrets"
+        required: false
+        type: boolean
 
 jobs:
   scan:
