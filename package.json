@@ -19,6 +19,7 @@
     "chalk": "^4",
     "cli-table3": "^0.6.5",
     "commander": "^11.0.0",
+    "google-auth-library": "^9.14.1",
     "mongodb": "^6.8.1",
     "mysql2": "^3.11.3",
     "pg": "^8.13.0",
