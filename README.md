@@ -219,15 +219,20 @@ on:
   pull_request:
 
 jobs:
-  run_secret_scan:
-    uses: Onboardbase/securelog-scan@main
-    with:
-      exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
-      commits: 100 # Number of recent commits to scan (optional)
-      config: ".securelog.yaml" # Optional path to a custom config file (optional)
-      changed: "true" # Set to "false" to scan entire repository instead of just files that was changed (optional)
-      mask: "true" # that is mask secret value e.g sk_******
-      verify: "true" # that is verify potential secrets against their service provider
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Secret Scanning
+        uses: onboardbase/securelog-scan@main
+        with:
+          exclude: "node_modules,dist" # Comma-separated list of folders to exclude (optional)
+          commits: 100 # Number of recent commits to scan (optional)
+          config: ".securelog.yaml" # Optional path to a custom config file (optional)
+          changed: "true" # Set to "false" to scan entire repository instead of just files that was changed (optional)
+          mask: "true" # that is mask secret value e.g sk_******
+          verify: "true" # that is verify potential secrets against their service provider
 ```
 
 # Analyzers
