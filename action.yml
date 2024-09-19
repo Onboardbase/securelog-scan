@@ -3,33 +3,32 @@ description: "Scan your codebase, team's logs, build environments, repos & CI pi
 branding:
   icon: "shield"
   color: "yellow"
-on:
-  workflow_call:
-    inputs:
-      exclude:
-        description: "Comma-separated list of folders to exclude from scanning"
-        required: false
-        type: string
-      commits:
-        description: "Number of recent commits to scan"
-        required: false
-        type: number
-      config:
-        description: "Path to secure log scan config file"
-        required: false
-        type: string
-      changed:
-        description: "Scan only changed files"
-        required: false
-        type: boolean
-      mask:
-        description: "Mask secret values"
-        required: false
-        type: boolean
-      verify:
-        description: "Verify secrets"
-        required: false
-        type: boolean
+
+inputs:
+  exclude:
+    description: "Comma-separated list of folders to exclude from scanning"
+    required: false
+    type: string
+  commits:
+    description: "Number of recent commits to scan"
+    required: false
+    type: number
+  config:
+    description: "Path to secure log scan config file"
+    required: false
+    type: string
+  changed:
+    description: "Scan only changed files"
+    required: false
+    type: boolean
+  mask:
+    description: "Mask secret values"
+    required: false
+    type: boolean
+  verify:
+    description: "Verify secrets"
+    required: false
+    type: boolean
 
 jobs:
   scan:
