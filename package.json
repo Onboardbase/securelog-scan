@@ -1,6 +1,6 @@
 {
   "name": "securelog-scan",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "bin/sls.js",
   "author": {
@@ -14,11 +14,13 @@
     "start": "node bin/sls.js"
   },
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.654.0",
     "ahocorasick": "^1.0.2",
     "axios": "^1.7.7",
     "chalk": "^4",
     "cli-table3": "^0.6.5",
     "commander": "^11.0.0",
+    "google-auth-library": "^9.14.1",
     "mongodb": "^6.8.1",
     "mysql2": "^3.11.3",
     "pg": "^8.13.0",
