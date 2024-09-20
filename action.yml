@@ -30,30 +30,27 @@ inputs:
     required: false
     type: boolean
 
-jobs:
-  scan:
-    runs-on: ubuntu-latest
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout securelog-cli repository
+      uses: actions/checkout@v2
 
-    steps:
-      - name: Checkout securelog-cli repository
-        uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: "18"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "18"
-
-      - name: Run secret scan
-        working-directory: ${{ github.workspace }}
-        run: |
-          CLI_COMMAND="npx securelog-scan scan"
-          if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
-          if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
-          if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
-          if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
-          if [ "${{ inputs.verify }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --verify"; fi
-          if [ "${{ inputs.mask }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --mask"; fi
-          echo "Running: $CLI_COMMAND"
-          eval "$CLI_COMMAND"
-        env:
-          FORCE_COLOR: "1"
+    - name: Run secret scan
+      run: |
+        CLI_COMMAND="npx securelog-scan scan"
+        if [ ! -z "${{ inputs.exclude }}" ]; then CLI_COMMAND="$CLI_COMMAND --exclude ${{ inputs.exclude }}"; fi
+        if [ ! -z "${{ inputs.commits }}" ]; then CLI_COMMAND="$CLI_COMMAND --commits ${{ inputs.commits }}"; fi
+        if [ ! -z "${{ inputs.config }}" ]; then CLI_COMMAND="$CLI_COMMAND --config ${{ inputs.config }}"; fi
+        if [ "${{ inputs.changed }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --changed"; fi
+        if [ "${{ inputs.verify }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --verify"; fi
+        if [ "${{ inputs.mask }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --mask"; fi
+        echo "Running: $CLI_COMMAND"
+        eval "$CLI_COMMAND"
+      env:
+        FORCE_COLOR: "1"
