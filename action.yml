@@ -52,5 +52,6 @@ runs:
         if [ "${{ inputs.mask }}" == "true" ]; then CLI_COMMAND="$CLI_COMMAND --mask"; fi
         echo "Running: $CLI_COMMAND"
         eval "$CLI_COMMAND"
+      shell: bash
       env:
         FORCE_COLOR: "1"
