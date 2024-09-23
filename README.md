@@ -111,7 +111,6 @@ detectors:
   #   regex: "\\bsk\\_[a-z]{1,}\\_[A-Za-z0-9]{40}\\b"
   #   keywords: ["paystack"]
   #   detectorType: "Paystack"
-
   # mailgun:
   #   regex:
   #     "Original Token": "\\b([a-zA-Z-0-9]{72})\\b"
@@ -119,6 +118,11 @@ detectors:
   #     "Hex Mailgun Token": "\\b([a-f0-9]{32}-[a-f0-9]{8}-[a-f0-9]{8})\\b"
   #   keywords: ["mailgun"]
   #   detectorType: "Mailgun"
+  # Agora:
+  #   regex: "\\b([a-z0-9]{32})\\b"
+  #   keywords: ["agora"]
+  #   detectorType: "Agora"
+  #   group: ["agora"] // sorrounding groups to reduce false positives (mostly for generic secret types)
 exclude:
   paths:
     # - "node_modules"
