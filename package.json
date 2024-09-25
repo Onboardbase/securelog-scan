@@ -1,6 +1,6 @@
 {
   "name": "securelog-scan",
-  "version": "1.1.9",
+  "version": "2.0.2",
   "description": "A CLI tool to scan codebases for potential secrets.",
   "main": "dist/index.js",
   "author": {
@@ -10,8 +10,14 @@
   "bin": {
     "sls": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .ts"
