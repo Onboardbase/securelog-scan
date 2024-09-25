@@ -1,17 +1,20 @@
 {
   "name": "securelog-scan",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "A CLI tool to scan codebases for potential secrets.",
-  "main": "bin/sls.js",
+  "main": "dist/index.js",
   "author": {
     "name": "Onboardbase",
     "url": "https://github.com/onboardbase"
   },
   "bin": {
-    "sls": "./bin/sls.js"
+    "sls": "dist/index.js"
   },
   "scripts": {
-    "start": "node bin/sls.js"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "watch": "tsc --watch",
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.654.0",
@@ -28,11 +31,18 @@
     "redis": "^4.7.0",
     "yaml": "^2.5.0"
   },
-  "resolutions": {
-    "strip-ansi": "6.0.0",
-    "string-width": "4.2.3"
-  },
   "repository": "https://github.com/Onboardbase/securelog-scan",
   "bugs": "https://github.com/Onboardbase/securelog-scan/issues",
-  "homepage": "https://thesecurelog.com"
+  "homepage": "https://thesecurelog.com",
+  "devDependencies": {
+    "@types/ahocorasick": "^1.0.0",
+    "@types/node": "^22.6.1",
+    "@types/pg": "^8.11.10",
+    "eslint": "^9.11.1",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
 }
