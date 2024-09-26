@@ -2,10 +2,11 @@ import Re2 from "re2";
 import { surroundWithGroups } from "../../regexHandler";
 import { makeGitLabRequest } from "../../analyzers/gitlab";
 import { Detector, ScanResult } from "../../types/detector";
+import { isFalsePositive } from "../../util";
 
 const keywords: string[] = ["gitlab"];
 const keyPattern: Re2 = new Re2(
-  surroundWithGroups(keywords) + /\b([a-zA-Z0-9\-=_]{20,22})\b/,
+  `${surroundWithGroups(keywords)}\\b([a-zA-Z0-9\-=_]{20,22})\\b`,
   "gi"
 );
 
@@ -20,10 +21,20 @@ const scan = async (
     if (match.length !== 2) continue;
 
     if (match[0].includes("glpat-")) continue;
+    if (
+      isFalsePositive(match[1].trim(), ["personal_access_tokens", "display"])
+        .isFalsePositive
+    )
+      // remove false positive for detector matching random strings from our gitlab analyzer
+      continue;
 
     const resMatch = match[1].trim();
     result.rawValue = resMatch;
     result.position = match.index;
+    result.extras = {
+      version: 1,
+      help: 'run sls git-rewrite --secret "secrets to remove from git history"',
+    };
 
     if (verify) {
       try {

@@ -262,6 +262,21 @@ To run an analyzer, use the following command:
 sls analyze <analyzer> --secret "<api key or connection string>" # slack, mongodb, mysql, postgresql, github, gitlab,
 ```
 
+## Secret Removal from Git History
+
+To remove any detected secret from git history, use the following command:
+
+```bash
+sls git-rewrite --secrets "<secrets you will like removed from git history>"
+```
+
+> Note: This command modifies your Git history, so you should force-push the cleaned branches to the remote repository after running this:
+
+```bash
+git push --force --all
+git push --force --tags
+```
+
 # Contributing
 
 Feel free to contribute to this project by opening issues or submitting pull requests.

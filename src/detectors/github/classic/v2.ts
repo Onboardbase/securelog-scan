@@ -31,11 +31,16 @@ const scan = async (
     const resMatch = match[0].trim();
     result.rawValue = resMatch;
     result.position = match.index;
+    result.extras = {
+      version: 2,
+      help: 'run sls git-rewrite --secret "secrets to remove from git history"',
+    };
 
     if (verify) {
       try {
         const metadata = await getTokenMetadata(resMatch, false);
         result.extras = {
+          ...result.extras,
           email: metadata?.user.email,
           scopes: metadata?.oauthScopes.toString(),
           expiry: formatExpiryDate(metadata?.expiration as unknown as number),

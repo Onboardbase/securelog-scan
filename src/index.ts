@@ -4,6 +4,7 @@ import chalk from "chalk";
 import pkg from "../package.json";
 import { scan } from "./scan";
 import { analyzers } from "./analyzers";
+import { removeSecretsFromGitHistory } from "./gitRewrite";
 
 const program = new Command();
 
@@ -55,5 +56,14 @@ program
     }
     serviceExist[service.toLowerCase()](options.secret);
   });
+
+program
+  .command("git-rewrite")
+  .option(
+    "-p, --secrets <string>",
+    "Secrets/Patterns to remove, supports regex"
+  )
+  .description("Remove secrets from git history")
+  .action((options) => removeSecretsFromGitHistory(options.secrets));
 
 program.parse(process.argv);
