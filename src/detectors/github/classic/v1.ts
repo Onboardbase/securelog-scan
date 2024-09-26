@@ -29,7 +29,10 @@ const scan = async (
     const resMatch = match[1].trim();
     result.rawValue = resMatch;
     result.position = match.index;
-    result.extras = { version: 1 };
+    result.extras = {
+      version: 1,
+      help: 'run sls git-rewrite --secret "secrets to remove from git history"',
+    };
 
     if (verify) {
       try {
