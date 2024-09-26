@@ -12,8 +12,12 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "lib/util.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts", "lib"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
