@@ -191,7 +191,7 @@ npx husky add .husky/pre-push "sls scan --changed"
 
 Replace `your-cli-command` with the actual name of your CLI tool.
 
-## 4. Ensure Husky Runs on Install
+## 4. Ensure husky runs on install
 
 To ensure Husky is set up automatically when installing dependencies, add the following to your `package.json`:
 
@@ -205,7 +205,7 @@ To ensure Husky is set up automatically when installing dependencies, add the fo
 
 After setting up the hooks, test them by attempting to make a commit or push in your repository. Husky will automatically run securelog scan, allowing or blocking the commit/push based on the scan results.
 
-# CI Pipelines
+# CI pipelines
 
 Securelog Scan allows you to run the to scan your codebase for secrets during CI processes. It provides flexibility for various configuration options such as excluding specific folders, limiting the number of commits to scan, and more.
 
@@ -243,7 +243,7 @@ jobs:
 
 We have implemented various analyzers to help detect and analyze potential secrets within different types of services and platforms. Each analyzer is designed to handle specific types of secrets and configurations, ensuring that sensitive information is detected and managed appropriately. Below is an overview of the analyzers we have implemented
 
-## Analyzer Descriptions
+## Analyzer descriptions
 
 | **Analyzer**   | **Command**                                             | **Description**                                                                                                                        |
 | -------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -254,7 +254,7 @@ We have implemented various analyzers to help detect and analyze potential secre
 | **GitLab**     | `sls analyze gitlab --secret "<api-key>"`               | Inspects GitLab API keys, attempts to access user and project data, and retrieves information about user roles and project visibility. |
 | **Slack**      | `sls analyze slack --secret "<api-token>"`              | Inspects Slack API tokens, attempts to access workspace data, and retrieves information about channels, users, and workspace settings. |
 
-## Command Usage
+## Command usage
 
 To run an analyzer, use the following command:
 
@@ -262,7 +262,7 @@ To run an analyzer, use the following command:
 sls analyze <analyzer> --secret "<api key or connection string>" # slack, mongodb, mysql, postgresql, github, gitlab,
 ```
 
-## Secret Removal from Git History
+## Secret removal from git history
 
 To remove any detected secret from git history, use the following command:
 
