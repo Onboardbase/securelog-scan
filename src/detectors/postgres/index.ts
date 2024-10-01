@@ -1,6 +1,7 @@
 import Re2 from "re2";
 import { Client } from "pg";
 import { Detector, ScanResult } from "../../types/detector";
+import { isFalsePositive } from "../../util";
 
 const keywords: string[] = ["postgres"];
 const keyPattern = new Re2(
@@ -21,22 +22,24 @@ const scan = async (
     result.rawValue = resMatch;
     result.position = match.index;
 
-    const isLocalInstance = ["127.0.0.1", "localhost"].some((value) =>
-      resMatch.includes(value)
-    );
+    /**
+     * If it's a local postgres URL, continue scanning
+     * as localhost urls are publicly accessible hence we dont consider it as
+     * a valid secret
+     */
+    if (isFalsePositive(resMatch, ["127.0.0.1", "localhost"]).isFalsePositive)
+      continue;
 
     if (verify) {
-      if (!isLocalInstance) {
-        const client = new Client({
-          connectionString: resMatch,
-        });
-        try {
-          await client.connect();
-          result.verified = true;
-        } catch (error) {
-        } finally {
-          await client.end();
-        }
+      const client = new Client({
+        connectionString: resMatch,
+      });
+      try {
+        await client.connect();
+        result.verified = true;
+      } catch (error) {
+      } finally {
+        await client.end();
       }
     }
 

@@ -1,1 +1,2 @@
-export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+export const GIT_HTTP_MAX_REQUEST_BUFFER = 524288000; // 500 MB

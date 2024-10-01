@@ -2,6 +2,7 @@ import Re2 from "re2";
 import mysql from "mysql2";
 import util from "util";
 import { Detector, ScanResult } from "../../types/detector";
+import { isFalsePositive } from "../../util";
 
 const keywords: string[] = ["mysql"];
 const keyPattern = new Re2(
@@ -22,23 +23,25 @@ const scan = async (
     result.rawValue = resMatch;
     result.position = match.index;
 
-    const isLocalInstance = ["127.0.0.1", "localhost"].some((value) =>
-      resMatch.includes(value)
-    );
+    /**
+     * If it's a local mysql URL, continue scanning
+     * as localhost urls are publicly accessible hence we dont consider it as
+     * a valid secret
+     */
+    if (isFalsePositive(resMatch, ["127.0.0.1", "localhost"]).isFalsePositive)
+      continue;
 
     if (verify) {
-      if (!isLocalInstance) {
-        const connection = mysql.createConnection(resMatch);
-        try {
-          const connectAsync = util
-            .promisify(connection.connect)
-            .bind(connection);
-          await connectAsync();
-          result.verified = true;
-        } catch (error) {
-        } finally {
-          connection.end();
-        }
+      const connection = mysql.createConnection(resMatch);
+      try {
+        const connectAsync = util
+          .promisify(connection.connect)
+          .bind(connection);
+        await connectAsync();
+        result.verified = true;
+      } catch (error) {
+      } finally {
+        connection.end();
       }
     }
 

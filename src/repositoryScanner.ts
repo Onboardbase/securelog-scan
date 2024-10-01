@@ -5,6 +5,7 @@ import os from "os";
 import { scanDirectory } from "./fileScanner";
 import { scanGitCommitsForSecrets } from "./gitScanner";
 import { AnalyzeRepositoryOptions } from "./types";
+import { GIT_HTTP_MAX_REQUEST_BUFFER } from "./constants";
 
 const validateAndFormatRepoUrl = (urlString: string): string => {
   try {
@@ -31,17 +32,35 @@ const cloneRepository = (repoUrl: string): string => {
   const repoDir = path.join(tmpDir, randomBytes(12).toString("hex"));
 
   try {
-    console.log(`Cloning repository from ${repoUrl}...`);
-    execSync(`git clone ${repoUrl} ${repoDir}`, { stdio: "pipe" });
+    console.log("Please wait, while securelog scan is in progress...");
+    execSync(
+      `git -c http.postBuffer=${GIT_HTTP_MAX_REQUEST_BUFFER} clone --depth 1 --filter=blob:none --single-branch ${repoUrl} ${repoDir}`,
+      {
+        stdio: "pipe",
+        timeout: 300000, // 5 min
+      }
+    );
     return repoDir;
   } catch (error: any) {
+    /**
+     * the trick here basically is that sometimes for huge repository, git
+     * clone will be successful but the git cli fails while trying to checkout to
+     * the default branch, so if thats the case, return repoDir so we can already
+     * scan the cloned directory
+     *
+     * I could have added --no-checkout to the git command but then we want to make sure its able to checkout
+     * to the default branch for repos that are not huge so its better its handled gracefully here for very large
+     * repos
+     */
+    if (error.message.includes("Clone succeeded, but checkout failed"))
+      return repoDir;
     throw new Error(`Failed to clone repository: ${error.message}`);
   }
 };
 
 const cleanUpRepository = (dirPath: string): void => {
   try {
-    console.log(`Cleaning up repository at ${dirPath}...`);
+    // console.log(`Cleaning up repository at ${dirPath}...`);
     const removeCommand =
       os.platform() === "win32"
         ? `rd /s /q "${dirPath}"`

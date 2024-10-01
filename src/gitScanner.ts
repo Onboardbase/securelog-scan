@@ -34,10 +34,10 @@ const runGitCommand = (
     rl.on("close", resolve);
 
     gitProcess.on("error", (err) =>
-      reject(`Error executing git log: ${err.message}`)
+      reject(new Error(`Error executing git command: ${err.message}`))
     );
     gitProcess.stderr.on("data", (data) =>
-      reject(`Error executing git log: ${data.toString()}`)
+      reject(new Error(`Git error: ${data.toString()}`))
     );
   });
 };
@@ -46,10 +46,9 @@ const scanLineForSecrets = async (
   line: string,
   commitInfo: CommitInfo,
   filePath: string,
-  isUrl: boolean,
-  verify: boolean | undefined,
   core: AhoCorasickCore,
-  mask: boolean | undefined
+  mask: boolean | undefined,
+  verify?: boolean
 ): Promise<void> => {
   const detectors = core.findMatchingDetectors(line);
 
@@ -59,63 +58,48 @@ const scanLineForSecrets = async (
       const scanResponse = await scan(verify, line);
 
       if (scanResponse) {
-        logPotentialSecret(scanResponse, commitInfo, filePath, isUrl, mask);
+        logPotentialSecret(scanResponse, commitInfo, filePath, mask);
       }
     })
   );
 };
 
-/**
- * Log potential secrets found during scanning.
- */
 const logPotentialSecret = (
   scanResponse: ScanResult,
   commitInfo: CommitInfo,
   filePath: string,
-  isUrl: boolean,
   mask: boolean | undefined
 ): void => {
+  const fileInfo = getActualGitURLFilePath(filePath);
+  const rawValue = mask
+    ? maskString(scanResponse.rawValue as string)
+    : (scanResponse.rawValue as string);
+
   console.log(
     chalk.greenBright.bold(
       `${
         scanResponse.verified
           ? "\n💯 Found verified secret in git commit:"
-          : `\nPotential secret detected in git commit:`
+          : "\nPotential secret detected in git commit:"
       }`
     )
   );
   console.log(`${chalk.bold("Detector:")} ${scanResponse.detectorType}`);
-  console.log(
-    `${chalk.bold("File:")} ${
-      isUrl ? getActualGitURLFilePath(filePath) : filePath
-    }`
-  );
+  console.log(`${chalk.bold("File:")} ${fileInfo}`);
   console.log(`${chalk.bold("Line:")} ${commitInfo.lineNumber}`);
-  console.log(
-    `${chalk.bold("Raw Value:")} ${
-      mask
-        ? maskString(scanResponse.rawValue as string)
-        : (scanResponse.rawValue as String)
-    }`
-  );
-  console.log(`${chalk.bold("Hash:")} ${commitInfo.hash}`);
+  console.log(`${chalk.bold("Raw Value:")} ${rawValue}`);
+  console.log(`${chalk.bold("Commit Hash:")} ${commitInfo.hash}`);
   console.log(
     `${chalk.bold("Author:")} ${commitInfo.authorName} <${
       commitInfo.authorEmail
     }>`
   );
-  console.log(
-    `${chalk.bold("Commit:")} ${commitInfo.title}${
-      scanResponse.extras ? "" : "\n"
-    }`
-  );
-  if (scanResponse.extras) {
-    for (const [key, value] of Object.entries(scanResponse.extras)) {
-      console.log(`${chalk.bold(`${key}:`)} ${value}`);
-    }
-  }
+  console.log(`${chalk.bold("Commit Title:")} ${commitInfo.title}`);
 };
 
+/**
+ * Extracts changed lines and their details from the Git history.
+ */
 const getChangedLinesWithDetails = async (
   repoPath: string,
   excludedFolders: string[]
@@ -134,13 +118,12 @@ const getChangedLinesWithDetails = async (
 
   const lineHandler = (line: string) => {
     if (line.includes("|")) {
-      const [commitHash, authorName, authorEmail, commitTitle] =
-        line.split("|");
+      const [hash, authorName, authorEmail, title] = line.split("|");
       commitInfo = {
-        hash: commitHash,
+        hash,
         authorName,
         authorEmail,
-        title: commitTitle,
+        title,
         filePath: null,
         lineNumber: 0,
       };
@@ -156,7 +139,6 @@ const getChangedLinesWithDetails = async (
     } else if (line.startsWith("+") && !line.startsWith("+++")) {
       if (currentFile && commitInfo) {
         const addedLine = line.slice(1);
-        commitInfo.lineNumber = lineOffset;
         changedLines[currentFile].push({ ...commitInfo, line: addedLine });
         lineOffset++;
       }
@@ -170,28 +152,22 @@ const getChangedLinesWithDetails = async (
 const scanChangedLinesInFiles = async (
   changedFiles: Record<string, ChangedLine[]>,
   repoPath: string,
-  verify: boolean | undefined,
   core: AhoCorasickCore,
-  mask: boolean | undefined
+  mask: boolean | undefined,
+  verify?: boolean
 ): Promise<void> => {
   for (const [filePath, lines] of Object.entries(changedFiles)) {
     if (fs.existsSync(repoPath)) {
-      for (const {
-        line,
-        lineNumber,
-        hash,
-        authorName,
-        authorEmail,
-        title,
-      } of lines) {
+      for (const lineInfo of lines) {
+        const { line, lineNumber, hash, authorName, authorEmail, title } =
+          lineInfo;
         await scanLineForSecrets(
           line,
           { lineNumber, hash, authorName, authorEmail, title, filePath },
           filePath,
-          false,
-          verify,
           core,
-          mask
+          mask,
+          verify
         );
       }
     }
@@ -204,9 +180,8 @@ export const scanGitCommitsForSecrets = async ({
   changed,
   excludedFolders,
   verify,
-  url,
-  mask,
   core,
+  mask,
 }: ScanGitCommitsOptions): Promise<void> => {
   if (changed) {
     const changedFiles = await getChangedLinesWithDetails(
@@ -216,9 +191,9 @@ export const scanGitCommitsForSecrets = async ({
     await scanChangedLinesInFiles(
       changedFiles,
       startDirectory,
-      verify,
       core,
-      mask
+      mask,
+      verify
     );
     return;
   }
@@ -261,10 +236,9 @@ export const scanGitCommitsForSecrets = async ({
           trimmedLine,
           currentCommit,
           currentCommit.filePath,
-          !!url,
-          verify,
           core,
-          mask
+          mask,
+          verify
         );
         currentCommit.lineNumber++;
       }
