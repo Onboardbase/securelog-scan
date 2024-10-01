@@ -1,6 +1,7 @@
 import Re2 from "re2";
 import { createClient } from "redis";
 import { Detector, ScanResult } from "../../types/detector";
+import { isFalsePositive } from "../../util";
 
 const keywords: string[] = ["redis"];
 const keyPattern = new Re2(
@@ -20,30 +21,28 @@ const scan = async (
     result.rawValue = resMatch;
     result.position = match.index;
 
-    const isLocalInstance = ["127.0.0.1", "localhost"].some((value) =>
-      resMatch.includes(value)
-    );
+    /**
+     * If it's a local Redis URL, continue scanning
+     * as localhost urls are publicly accessible hence we dont consider it as
+     * a valid secret
+     */
+    if (isFalsePositive(resMatch, ["127.0.0.1", "localhost"]).isFalsePositive)
+      continue;
 
     if (verify) {
-      /**
-       * If it's a local Redis URL, don't try to connect to it
-       * as the user might not even have Redis running locally.
-       */
-      if (!isLocalInstance) {
-        let client;
+      let client;
 
-        try {
-          client = createClient({ url: resMatch });
-          client.on("error", (err) => {
-            throw new Error(err);
-          });
-          await client.connect();
+      try {
+        client = createClient({ url: resMatch });
+        client.on("error", (err) => {
+          throw new Error(err);
+        });
+        await client.connect();
 
-          result.verified = true;
-        } catch (error) {
-        } finally {
-          await client?.disconnect();
-        }
+        result.verified = true;
+      } catch (error) {
+      } finally {
+        await client?.disconnect();
       }
     }
 

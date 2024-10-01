@@ -39,7 +39,7 @@ const processPossibleSecrets = async (
 
   await Promise.all(
     detectors.map(async (detector) => {
-      const { scan, detectorType } = detector;
+      const { scan } = detector;
       const scanResponse = await scan(verify, trimmedFile);
       if (scanResponse) {
         const line =
