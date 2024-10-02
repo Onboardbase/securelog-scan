@@ -26,6 +26,12 @@ yarn global add securelog-scan # npm i -g securelog-scan
 
 ---
 
+### Show Version
+
+```bash
+sls --version
+```
+
 ## Usage
 
 ### Basic command
