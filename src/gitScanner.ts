@@ -104,10 +104,11 @@ const logPotentialSecret = (
       commitInfo.authorEmail
     }>`
   );
+  console.log(`${chalk.bold("Commit:")} ${commitInfo.title}`);
   console.log(
-    `${chalk.bold("Commit:")} ${commitInfo.title}${
-      scanResponse.extras ? "" : "\n"
-    }`
+    `${chalk.bold(
+      "help:"
+    )} run sls git-rewrite --secret "secrets to remove from git history`
   );
   if (scanResponse.extras) {
     for (const [key, value] of Object.entries(scanResponse.extras)) {

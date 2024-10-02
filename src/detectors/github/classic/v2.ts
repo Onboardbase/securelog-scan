@@ -33,7 +33,6 @@ const scan = async (
     result.position = match.index;
     result.extras = {
       version: 2,
-      help: 'run sls git-rewrite --secret "secrets to remove from git history"',
     };
 
     if (verify) {

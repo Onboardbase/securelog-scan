@@ -2,6 +2,7 @@ import path from "path";
 import { randomBytes } from "crypto";
 import { execSync } from "child_process";
 import os from "os";
+import chalk from "chalk";
 import { scanDirectory } from "./fileScanner";
 import { scanGitCommitsForSecrets } from "./gitScanner";
 import { AnalyzeRepositoryOptions } from "./types";
@@ -32,7 +33,6 @@ const cloneRepository = (repoUrl: string): string => {
   const repoDir = path.join(tmpDir, randomBytes(12).toString("hex"));
 
   try {
-    console.log("Please wait, while securelog scan is in progress...");
     execSync(
       `git -c http.postBuffer=${GIT_HTTP_MAX_REQUEST_BUFFER} clone --depth 1 --filter=blob:none --single-branch ${repoUrl} ${repoDir}`,
       {
@@ -54,13 +54,13 @@ const cloneRepository = (repoUrl: string): string => {
      */
     if (error.message.includes("Clone succeeded, but checkout failed"))
       return repoDir;
-    throw new Error(`Failed to clone repository: ${error.message}`);
+    console.error(chalk.red(`Failed to clone repository: ${error.message}`));
+    process.exit(1);
   }
 };
 
 const cleanUpRepository = (dirPath: string): void => {
   try {
-    // console.log(`Cleaning up repository at ${dirPath}...`);
     const removeCommand =
       os.platform() === "win32"
         ? `rd /s /q "${dirPath}"`

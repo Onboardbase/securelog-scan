@@ -27,7 +27,7 @@ export const scan = async (options: ScanOptions): Promise<void> => {
 
     const core = new AhoCorasickCore(customDetectors);
 
-    console.log(chalk.bold.greenBright("SecureLog Scanning...."));
+    console.log(chalk.bold.greenBright("Securelog scanning, please wait..."));
 
     const scanPromises: Promise<void>[] = [];
 
