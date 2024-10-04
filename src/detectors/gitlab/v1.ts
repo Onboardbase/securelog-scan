@@ -2,11 +2,10 @@ import Re2 from "re2";
 import { surroundWithGroups } from "../../regexHandler";
 import { makeGitLabRequest } from "../../analyzers/gitlab";
 import { Detector, ScanResult } from "../../types/detector";
-import { isFalsePositive } from "../../util";
 
 const keywords: string[] = ["gitlab"];
 const keyPattern: Re2 = new Re2(
-  `${surroundWithGroups(keywords)}\\b([a-zA-Z0-9\-=_]{20,22})\\b`,
+  `${surroundWithGroups(keywords)}\\b([a-z0-9]{20,22})\\b`,
   "gi"
 );
 
@@ -19,16 +18,16 @@ const scan = async (
 
   for (const match of matches) {
     if (match.length !== 2) continue;
-
     if (match[0].includes("glpat-")) continue;
-    if (
-      isFalsePositive(match[1].trim(), ["personal_access_tokens", "display"])
-        .isFalsePositive
-    )
-      // remove false positive for detector matching random strings from our gitlab analyzer
-      continue;
 
     const resMatch = match[1].trim();
+
+    /**
+     * exclude false positives, a gilab v1 token is suppose to start with go and a
+     * 20/22 length character
+     */
+    if (!resMatch.startsWith("go")) continue;
+
     result.rawValue = resMatch;
     result.position = match.index;
     result.extras = {

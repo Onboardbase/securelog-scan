@@ -1,15 +1,70 @@
+name: Deploy CLI to NPM
 on:
   push:
-    branches: main
+    branches:
+      - main
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
+
       - run: yarn install
+
+      - run: yarn build
+
+      # Publish to npm
       - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Get latest tag
+        id: get_tag
+        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Get the last merged PR details
+        id: pr_details
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: pulls } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 1
+            });
+            const pr = pulls.find(p => p.merged_at);
+            if (!pr) {
+              core.setFailed("No merged pull request found.");
+              return;
+            }
+            core.setOutput("pr_body", pr.body);
+            core.setOutput("pr_number", pr.number);
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.LATEST_TAG }}
+          release_name: Release ${{ env.LATEST_TAG }}
+          body: ${{ steps.pr_details.outputs.pr_body }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
