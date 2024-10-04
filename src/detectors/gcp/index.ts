@@ -31,7 +31,7 @@ const scan = async (
       continue;
     }
 
-    if (creds.client_email.includes("<mailto:")) {
+    if (creds.client_email && creds.client_email.includes("<mailto:")) {
       creds.client_email = creds.client_email
         .split("<mailto:")[1]
         .split("|")[0];
@@ -50,7 +50,7 @@ const scan = async (
       continue;
     }
 
-    result.rawValue = creds.client_email;
+    result.rawValue = creds.client_email || JSON.stringify(creds, null, 2);
     result.position = match.index;
     result.extras = {
       Project: creds.project_id,
