@@ -95,7 +95,7 @@ const logPotentialSecret = (
 
   if (extras) {
     for (const [key, value] of Object.entries(extras)) {
-      console.log(`${chalk.bold(`${key}:`)} ${value}`);
+      console.log(`${chalk.bold(`${key}:`)} ${value || ""}`);
     }
   }
 };

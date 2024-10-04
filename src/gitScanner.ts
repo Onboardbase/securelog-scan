@@ -112,7 +112,7 @@ const logPotentialSecret = (
   );
   if (scanResponse.extras) {
     for (const [key, value] of Object.entries(scanResponse.extras)) {
-      console.log(`${chalk.bold(`${key}:`)} ${value}`);
+      console.log(`${chalk.bold(`${key}:`)} ${value || ""}`);
     }
   }
 };
