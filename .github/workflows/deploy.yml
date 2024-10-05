@@ -39,24 +39,16 @@ jobs:
 
       - name: Get the last merged PR details
         id: pr_details
-        uses: actions/github-script@v6
+        uses: octokit/request-action@v3
         with:
-          script: |
-            const pulls = await github.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'closed',
-              sort: 'updated',
-              direction: 'desc',
-              per_page: 1
-            });
-            const pr = pulls.data.find(p => p.merged_at);
-            if (!pr) {
-              core.setFailed("No merged pull request found.");
-              return;
-            }
-            core.setOutput("pr_body", pr.body);
-            core.setOutput("pr_number", pr.number);
+          route: GET /repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc
+          headers: '{"authorization": "token ${{ secrets.GITHUB_TOKEN }}"}'
+
+      - name: Extract PR Body
+        id: extract_body
+        run: |
+          echo "PR_BODY=$(echo '${{ steps.pr_details.outputs.data }}' | jq -r '.[] | select(.merged_at != null) | .body')" >> $GITHUB_ENV
+          echo "PR_NUMBER=$(echo '${{ steps.pr_details.outputs.data }}' | jq -r '.[] | select(.merged_at != null) | .number')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -65,7 +57,7 @@ jobs:
         with:
           tag_name: ${{ env.LATEST_TAG }}
           release_name: Release ${{ env.LATEST_TAG }}
-          body: ${{ steps.pr_details.outputs.pr_body }}
+          body: ${{ env.PR_BODY }}
           draft: false
           prerelease: false
         env:
