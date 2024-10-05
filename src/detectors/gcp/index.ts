@@ -3,10 +3,10 @@ import { GoogleAuth } from "google-auth-library";
 import { Detector, ScanResult } from "../../types/detector";
 
 const keywords: string[] = ["provider_x509"];
-const keyPattern = new Re2(/\{[^{]+auth_provider_x509_cert_url[^}]+\}/, "g");
+const keyPattern = new Re2(/\{[^{]+auth_provider_x509_cert_url[^}]+\}/, "gi");
 
 const trimAngleBrackets = (s: string): string =>
-  s.replace(/^</, "").replace(/>$/, "");
+  s?.replace(/^</, "")?.replace(/>$/, "");
 
 const scan = async (
   verify: boolean | undefined,
@@ -79,7 +79,9 @@ const scan = async (
         });
 
         if (tokenInfo.status === 200) result.verified = true;
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     return result;
