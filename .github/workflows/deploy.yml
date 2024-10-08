@@ -43,6 +43,8 @@ jobs:
         with:
           route: GET /repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc
           headers: '{"authorization": "token ${{ secrets.GITHUB_TOKEN }}"}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract PR Body
         id: extract_body
