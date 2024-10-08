@@ -38,7 +38,7 @@ const scan = async (
       } catch (error) {
       } finally {
         // Disconnect from MongoDB client
-        await client.close();
+        if (result.verified) await client.close();
       }
     }
 

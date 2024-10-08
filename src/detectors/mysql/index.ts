@@ -41,7 +41,11 @@ const scan = async (
         result.verified = true;
       } catch (error) {
       } finally {
-        connection.end();
+        /**
+         * only try to end connection if secret has been verified which
+         * means database connection was successful
+         */
+        if (result.verified) connection.end();
       }
     }
 

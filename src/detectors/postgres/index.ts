@@ -39,7 +39,7 @@ const scan = async (
         result.verified = true;
       } catch (error) {
       } finally {
-        await client.end();
+        if (result.verified) await client.end();
       }
     }
 
