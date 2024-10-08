@@ -2,6 +2,8 @@
 
 **Securelog Scan** is a tool designed to scan your codebase for potential secrets like API keys, tokens, and other sensitive information. It supports scanning `.env` files, parsing `.git` commit history, and analyzing all files line by line.
 
+It takes 2min. Install, add, deploy.
+
 Need Secret scanning in other places?
 - [Securelog for your build and runtime logs](https://github.com/Onboardbase/securelog)
 - [Securelog for your react server components](https://github.com/Onboardbase/securelog-rsc)
