@@ -39,7 +39,7 @@ jobs:
 
       - name: Get the last merged PR details
         id: pr_details
-        uses: octokit/request-action@v3
+        uses: octokit/request-action@v2
         with:
           route: GET /repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc
           headers: '{"authorization": "token ${{ secrets.GITHUB_TOKEN }}"}'

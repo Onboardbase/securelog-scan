@@ -1,6 +1,6 @@
 import path from "path";
 import { randomBytes } from "crypto";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import os from "os";
 import chalk from "chalk";
 import { scanDirectory } from "./fileScanner";
@@ -33,28 +33,54 @@ const cloneRepository = (repoUrl: string): string => {
   const repoDir = path.join(tmpDir, randomBytes(12).toString("hex"));
 
   try {
-    execSync(
-      `git -c http.postBuffer=${GIT_HTTP_MAX_REQUEST_BUFFER} clone --depth 1 --filter=blob:none --single-branch ${repoUrl} ${repoDir}`,
-      {
-        stdio: "pipe",
-        timeout: 300000, // 5 min
+    const command = `git -c http.postBuffer=${GIT_HTTP_MAX_REQUEST_BUFFER} -c core.compression=0 clone --depth 1 --filter=blob:none --single-branch ${repoUrl} ${repoDir}`;
+    const result = spawnSync(command, {
+      shell: true,
+      timeout: 300000, // 5 mins
+      stdio: "pipe",
+      encoding: "utf-8",
+    });
+
+    if (result.status !== 0) {
+      if (
+        result.stderr.includes("Clone succeeded, but checkout failed") ||
+        result.stderr.includes("error: unable to checkout working tree")
+      ) {
+        console.warn(
+          chalk.yellow(
+            "Clone succeeded but checkout failed. Running manual checkout..."
+          )
+        );
+
+        // Attempt manual checkout to get the actual files
+        const checkoutResult = spawnSync("git", ["checkout", "HEAD"], {
+          cwd: repoDir,
+          shell: true,
+          stdio: "pipe",
+          encoding: "utf-8",
+        });
+
+        if (checkoutResult.status !== 0) {
+          console.error(
+            chalk.red(`Manual checkout failed: ${checkoutResult.stderr.trim()}`)
+          );
+          process.exit(1);
+        } else {
+          console.log(chalk.green("Manual checkout succeeded."));
+          return repoDir;
+        }
       }
-    );
+
+      // For other errors, display the error message and exit
+      console.error(
+        chalk.red(`Failed to clone repository: ${result.stderr.trim()}`)
+      );
+      process.exit(1);
+    }
+
     return repoDir;
   } catch (error: any) {
-    /**
-     * the trick here basically is that sometimes for huge repository, git
-     * clone will be successful but the git cli fails while trying to checkout to
-     * the default branch, so if thats the case, return repoDir so we can already
-     * scan the cloned directory
-     *
-     * I could have added --no-checkout to the git command but then we want to make sure its able to checkout
-     * to the default branch for repos that are not huge so its better its handled gracefully here for very large
-     * repos
-     */
-    if (error.message.includes("Clone succeeded, but checkout failed"))
-      return repoDir;
-    console.error(chalk.red(`Failed to clone repository: ${error.message}`));
+    console.error(chalk.red(`Unexpected error: ${error.message}`));
     process.exit(1);
   }
 };
