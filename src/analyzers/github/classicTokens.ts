@@ -54,9 +54,8 @@ const getTokenMetadata = async (
       console.log(chalk.red(`Error fetching token metadata: ${error.message}`));
       process.exit(1);
     }
+    throw new Error(`Error fetching token metadata: ${error.message}`);
   }
-
-  return null; // only returning this cos of TS compiler "Function lacks returning statement error"
 };
 
 const getAllReposForUser = async (apiToken: string): Promise<Repo[]> => {

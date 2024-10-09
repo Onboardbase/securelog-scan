@@ -23,31 +23,25 @@ const scan = async (
   data: string
 ): Promise<ScanResult | null> => {
   const azureClientSecretMatches = data.matchAll(clientSecretPat);
-  const azureTenantIdMatches = data.matchAll(tenantIDPat);
-  const azureClientIdMatches = data.matchAll(clientIDPat);
   const result: ScanResult = { detectorType: "Azure", verified: false };
 
   for (const azureClientSecretMatch of azureClientSecretMatches) {
-    if (azureClientSecretMatch.length !== 3) continue;
-    const azureSecretAccessKey: string = azureClientSecretMatch[2].trim();
-
-    result.rawValue = azureSecretAccessKey;
-    result.position = azureClientSecretMatch.index;
-
+    const azureTenantIdMatches = data.matchAll(tenantIDPat);
     for (const tenantId of azureTenantIdMatches) {
       if (tenantId.length !== 3) continue;
-      const azureTenantId: string = tenantId[2].trim();
 
-      result.extras = {
-        "Tenant ID": azureTenantId,
-      };
-
+      const azureClientIdMatches = data.matchAll(clientIDPat);
       for (const clientId of azureClientIdMatches) {
         if (clientId.length !== 3) continue;
-        const azureClientId: string = clientId[2].trim();
 
+        const azureSecretAccessKey: string = azureClientSecretMatch[2].trim();
+        const azureClientId: string = clientId[2].trim();
+        const azureTenantId: string = tenantId[2].trim();
+
+        result.rawValue = azureSecretAccessKey;
+        result.position = azureClientSecretMatch.index;
         result.extras = {
-          ...result.extras,
+          "Tenant ID": azureTenantId,
           "Client Id": azureClientId,
         };
 
@@ -64,10 +58,10 @@ const scan = async (
             result.verified = true;
           } catch (error) {}
         }
+
+        return result;
       }
     }
-
-    return result;
   }
 
   return null;

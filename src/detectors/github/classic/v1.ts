@@ -36,6 +36,7 @@ const scan = async (
     if (verify) {
       try {
         const metadata = await getTokenMetadata(resMatch, false);
+        result.verified = true;
         result.extras = {
           ...result.extras,
           email: metadata?.user?.email,
