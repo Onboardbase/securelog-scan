@@ -107,8 +107,7 @@ export const buildCustomDetectors = (
 
         for (const match of matches) {
           if (!match) continue;
-          const resMatch =
-            match.length === 1 ? match[0].trim() : match[1].trim();
+          const resMatch = match[match.length - 1].trim();
 
           return {
             detectorType: config.detectorType,
