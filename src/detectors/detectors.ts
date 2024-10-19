@@ -45,6 +45,8 @@ import { PostmanDetector } from "./postman";
 import { RedisDetector } from "./redis";
 import { SendgridDetector } from "./sendgrid";
 import { SlackDetector } from "./slack";
+import { SlackWebhooksDetector } from "./slackwebhook";
+import { StripeDetector } from "./stripe";
 
 export const detectors: Detector[] = [
   // AgoraDetector,
@@ -76,22 +78,24 @@ export const detectors: Detector[] = [
   // SendgridDetector,
   // SlackDetector,
 
-  AtlassianV1Detector,
-  AtlassianV2Detector,
-  CensysDetector,
-  ChatbotDetector,
-  CloudflareDetector,
-  CodacyDetector,
-  CodeClimateDetector,
-  CoinApiDetector,
-  CoinbaseDetector,
-  ConfluentDetector,
-  DigitaloceanV1Detector,
-  DigitaloceanV2Detector,
-  DiscordBotTokenDetector,
-  DiscordWebhookDetector,
-  DisqusDetector,
-  DocusignDetector,
-  DropboxDetector,
-  FlickrDetector,
+  // AtlassianV1Detector,
+  // AtlassianV2Detector,
+  // CensysDetector,
+  // ChatbotDetector,
+  // CloudflareDetector,
+  // CodacyDetector,
+  // CodeClimateDetector,
+  // CoinApiDetector,
+  // CoinbaseDetector,
+  // ConfluentDetector,
+  // DigitaloceanV1Detector,
+  // DigitaloceanV2Detector,
+  // DiscordBotTokenDetector,
+  // DiscordWebhookDetector,
+  // DisqusDetector,
+  // DocusignDetector,
+  // DropboxDetector,
+  // FlickrDetector,
+  // StripeDetector,
+  SlackWebhooksDetector,
 ];
