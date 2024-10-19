@@ -37,6 +37,8 @@ import { MixpanelDetector } from "./mixpanel";
 import { MongoDBDetector } from "./mongodb";
 import { MuxDetector } from "./mux";
 import { MySQLDetector } from "./mysql";
+import { NpmV1Detector } from "./npm/v1";
+import { NpmV2Detector } from "./npm/v2";
 import { OktaDetector } from "./okta";
 import { OpenAIDetector } from "./openai";
 import { PaystackDetector } from "./paystack";
@@ -97,5 +99,7 @@ export const detectors: Detector[] = [
   // DropboxDetector,
   // FlickrDetector,
   // StripeDetector,
-  SlackWebhooksDetector,
+  // SlackWebhooksDetector,
+  NpmV1Detector,
+  NpmV2Detector,
 ];
