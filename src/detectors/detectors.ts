@@ -37,6 +37,7 @@ import { MixpanelDetector } from "./mixpanel";
 import { MongoDBDetector } from "./mongodb";
 import { MuxDetector } from "./mux";
 import { MySQLDetector } from "./mysql";
+import { NotionDetector } from "./notion";
 import { NpmV1Detector } from "./npm/v1";
 import { NpmV2Detector } from "./npm/v2";
 import { OktaDetector } from "./okta";
@@ -102,4 +103,5 @@ export const detectors: Detector[] = [
   // SlackWebhooksDetector,
   NpmV1Detector,
   NpmV2Detector,
+  NotionDetector,
 ];
