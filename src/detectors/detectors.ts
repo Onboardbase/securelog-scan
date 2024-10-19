@@ -18,6 +18,12 @@ import { CoinbaseDetector } from "./coinbase";
 import { ConfluentDetector } from "./confluent";
 import { DigitaloceanV1Detector } from "./digitalocean/v1";
 import { DigitaloceanV2Detector } from "./digitalocean/v2";
+import { DiscordBotTokenDetector } from "./discordbottoken";
+import { DiscordWebhookDetector } from "./discordwebhook";
+import { DisqusDetector } from "./disqus";
+import { DocusignDetector } from "./docusign";
+import { DropboxDetector } from "./dropbox";
+import { FlickrDetector } from "./flickr";
 import { GCPDetector } from "./gcp";
 import { GeminiDetector } from "./gemini";
 import { GitHubClassicTokenDetectorV1 } from "./github/classic/v1";
@@ -82,4 +88,10 @@ export const detectors: Detector[] = [
   ConfluentDetector,
   DigitaloceanV1Detector,
   DigitaloceanV2Detector,
+  DiscordBotTokenDetector,
+  DiscordWebhookDetector,
+  DisqusDetector,
+  DocusignDetector,
+  DropboxDetector,
+  FlickrDetector,
 ];
