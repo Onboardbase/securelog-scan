@@ -27,7 +27,7 @@ const scan = async (
     if (verify) {
       try {
         await axios.get(
-          `https://www.flickr.com/services/rest/?method=flickr.tags.getHotList&api_key=${resMatch}`
+          `https://flickr.com/services/rest/?method=flickr.tags.getHotList&api_key=${resMatch}`
         );
 
         result.verified = true;

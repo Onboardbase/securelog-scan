@@ -23,6 +23,30 @@ const scanFileForSecrets = async (
   await processPossibleSecrets(filePath, trimmedFile, verify, core, mask, url);
 };
 
+export const processPossibleSecretsInString = async (
+  rawValue: string,
+  core: AhoCorasickCore
+) => {
+  if (rawValue === "") return;
+  let modifiedValue = rawValue;
+  const detectors = core.findMatchingDetectors(rawValue);
+
+  await Promise.all(
+    detectors.map(async (detector) => {
+      const { scan } = detector;
+      const scanResponse = await scan(false, rawValue);
+      if (scanResponse) {
+        modifiedValue = modifiedValue.replaceAll(
+          scanResponse.rawValue as string,
+          maskString(scanResponse.rawValue as string)
+        );
+      }
+    })
+  );
+
+  console.log(modifiedValue);
+};
+
 /**
  * Processes possible secrets and checks for matches.
  */
@@ -80,17 +104,22 @@ const logPotentialSecret = (
       `${
         verified
           ? "\n💯 Found verified secret"
-          : `\nPotential secret detected in ${url || filePath}`
+          : `\nPotential secret detected in ${
+              url || filePath === "" ? "RawValue" : filePath
+            }`
       }`
     )
   );
   console.log(`${chalk.bold("Detector:")} ${detector}`);
   console.log(`${chalk.bold("Line:")} ${line}`);
-  console.log(
-    `${chalk.bold("File Path:")} ${
-      url ? getActualGitURLFilePath(filePath) : filePath
-    }`
-  );
+  if (filePath !== "") {
+    console.log(
+      `${chalk.bold("File Path:")} ${
+        url ? getActualGitURLFilePath(filePath) : filePath
+      }`
+    );
+  }
+
   console.log(`${chalk.bold("Raw Value:")} ${rawValue}${extras ? "" : "\n"}`);
 
   if (extras) {

@@ -14,7 +14,8 @@ const keyPattern: Re2 = new Re2(
 const idPattern = new Re2(
   `${surroundWithGroups([
     "secret",
-  ])}\\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\b`
+  ])}\\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\\b`,
+  "gi"
 );
 
 const scan = async (

@@ -29,6 +29,7 @@ program
     false
   )
   .option("-m, --mask", "Should mask secret values", false)
+  .option("--rawValue <string>", "a text string to scan for secrets")
   .action(async (options) => await scan(options));
 
 program

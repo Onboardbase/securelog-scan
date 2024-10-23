@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { scanDirectory } from "./fileScanner";
+import { processPossibleSecretsInString, scanDirectory } from "./fileScanner";
 import { scanGitCommitsForSecrets } from "./gitScanner";
 import { configHandler } from "./configHandler";
 import { buildCustomDetectors } from "./regexHandler";
@@ -31,13 +31,33 @@ export const scan = async (options: ScanOptions): Promise<void> => {
 
     const scanPromises: Promise<void>[] = [];
 
+    if (options.rawValue && options.dir) {
+      console.log(
+        chalk.yellow(
+          "info: --rawValue & --dir was specified, defaulting to --dir"
+        )
+      );
+    }
+
+    if (options.rawValue && !options.dir && !options.url) {
+      scanPromises.push(processPossibleSecretsInString(options.rawValue, core));
+    }
+
+    /**
+     * Remote git scanning
+     */
     if (options.url) {
       scanPromises.push(
         scanUrl(options, excludedFolders, excludedExtensions, core)
       );
     }
 
-    if (!options.changed && !options.url) {
+    /**
+     * Scans specified directory or current working directory
+     * only runs if --url is not specified that is user is not trying
+     * to scan a git repo
+     */
+    if (options.dir && !options.url) {
       scanPromises.push(
         scanCodebase(
           startDirectory,

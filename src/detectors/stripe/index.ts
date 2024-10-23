@@ -2,7 +2,7 @@ import Re2 from "re2";
 import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 
-const keywords: string[] = ["k_live", "k_test"];
+const keywords: string[] = ["rk_live", "rk_test"];
 
 /**
  * we only support scanning stripe restricted keys at the moment to reduce false
