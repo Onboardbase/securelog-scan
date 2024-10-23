@@ -38,13 +38,13 @@ const scan = async (
     if (verify) {
       try {
         const metadata = await getTokenMetadata(resMatch, false);
+        result.verified = true;
         result.extras = {
           ...result.extras,
           email: metadata?.user.email,
           scopes: metadata?.oauthScopes.toString(),
           expiry: formatExpiryDate(metadata?.expiration as unknown as number),
           username: metadata?.user.login,
-          version: 2,
         };
       } catch (error) {}
     }

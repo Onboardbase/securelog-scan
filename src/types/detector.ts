@@ -12,7 +12,10 @@ export interface ScanResult {
   rawValue?: string;
   verified: boolean;
   position?: number;
-  extras?: Record<string, any>;
+  extras?: {
+    version?: number;
+    [key: string]: any;
+  };
 }
 
 export interface DetectorConfig {

@@ -37,29 +37,12 @@ jobs:
         id: get_tag
         run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
-      - name: Get the last merged PR details
-        id: pr_details
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc
-          headers: '{"authorization": "token ${{ secrets.GITHUB_TOKEN }}"}'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract PR Body
-        id: extract_body
-        run: |
-          echo "PR_BODY=$(echo '${{ steps.pr_details.outputs.data }}' | jq -r '.[] | select(.merged_at != null) | .body')" >> $GITHUB_ENV
-          echo "PR_NUMBER=$(echo '${{ steps.pr_details.outputs.data }}' | jq -r '.[] | select(.merged_at != null) | .number')" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.LATEST_TAG }}
           release_name: Release ${{ env.LATEST_TAG }}
-          body: ${{ env.PR_BODY }}
+          body: "New Release"
           draft: false
           prerelease: false
         env:

@@ -10,6 +10,7 @@ export interface ScanOptions {
   changed?: boolean;
   verify?: boolean;
   mask?: boolean;
+  rawValue?: string;
 }
 
 export interface Config {

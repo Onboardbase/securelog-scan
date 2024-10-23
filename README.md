@@ -5,6 +5,7 @@
 It takes 2min. Install, add, deploy.
 
 Need Secret scanning in other places?
+
 - [Securelog for your build and runtime logs](https://github.com/Onboardbase/securelog)
 - [Securelog for your react server components](https://github.com/Onboardbase/securelog-rsc)
 
@@ -150,6 +151,12 @@ exclude:
 
 ```bash
 sls scan --dir ./my-project --exclude dist,node_modules --config ./config.yml --commits 100
+```
+
+### You can also detect secrets in a string and mask it by default using the command below
+
+```bash
+sls scan --rawValue "raw secret values"
 ```
 
 ---
