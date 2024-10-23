@@ -36,7 +36,6 @@ const scan = async (
           }
         );
 
-        console.log(data);
         result.verified = true;
       } catch (error) {}
     }
