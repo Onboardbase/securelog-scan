@@ -10,6 +10,7 @@ import { AzureDetector } from "./azure";
 import { BraintreeDetector } from "./braintree";
 import { CensysDetector } from "./censys";
 import { ChatbotDetector } from "./chatbot";
+import { CircleCiDetector } from "./circleci";
 import { CloudflareDetector } from "./cloudflare";
 import { CodacyDetector } from "./codacy";
 import { CodeClimateDetector } from "./codeclimate";
@@ -24,6 +25,8 @@ import { DisqusDetector } from "./disqus";
 import { DocusignDetector } from "./docusign";
 import { DropboxDetector } from "./dropbox";
 import { FlickrDetector } from "./flickr";
+import { FlutterwaveDetector } from "./flutterwave";
+import { FormBucketDetector } from "./formbucket";
 import { GCPDetector } from "./gcp";
 import { GeminiDetector } from "./gemini";
 import { GitHubClassicTokenDetectorV1 } from "./github/classic/v1";
@@ -31,9 +34,11 @@ import { GitHubClassicTokenDetectorV2 } from "./github/classic/v2";
 import { GitLabDetectorV1 } from "./gitlab/v1";
 import { GitLabDetectorV2 } from "./gitlab/v2";
 import { GoogleOauth2Detector } from "./googleoauth2";
+import { MailchimpDetector } from "./mailchimp";
 import { MailgunDetector } from "./mailgun";
 import { MailjetBasicAuthDetector } from "./mailjet/basicAuth";
 import { MailjetSmsDetector } from "./mailjet/sms";
+import { MiroDetector } from "./miro";
 import { MixpanelDetector } from "./mixpanel";
 import { MongoDBDetector } from "./mongodb";
 import { MuxDetector } from "./mux";
@@ -105,4 +110,9 @@ export const detectors: Detector[] = [
   NpmV2Detector,
   NotionDetector,
   GoogleOauth2Detector,
+  MiroDetector,
+  MailchimpDetector,
+  FlutterwaveDetector,
+  FormBucketDetector,
+  CircleCiDetector,
 ];

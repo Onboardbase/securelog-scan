@@ -23,6 +23,14 @@ const scanFileForSecrets = async (
   await processPossibleSecrets(filePath, trimmedFile, verify, core, mask, url);
 };
 
+/**
+ *
+ * @todo
+ * make core optional and rebuild core if its not passed,
+ * this should cater for the securelog SDK that might need this function exposed
+ *
+ * also have an argument to choose to log (on the cli) or return raw string on the SDK
+ */
 export const processPossibleSecretsInString = async (
   rawValue: string,
   core: AhoCorasickCore
