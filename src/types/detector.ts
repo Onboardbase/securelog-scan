@@ -1,3 +1,10 @@
+import { CommitInfo } from ".";
+
+export enum EScannerTypes {
+  "FILE_SCANNER" = "FILE_SCANNER",
+  "GIT_SCANNER" = "GIT_SCANNER",
+}
+
 export interface Detector {
   detectorType: string;
   keywords: string[];
@@ -16,6 +23,15 @@ export interface ScanResult {
     version?: number;
     [key: string]: any;
   };
+}
+
+export interface UnifiedScanResult extends ScanResult {
+  filePath: string;
+  commitInfo?: CommitInfo;
+  url?: string;
+  isUrl?: boolean;
+  mask?: boolean;
+  scannerType: EScannerTypes;
 }
 
 export interface DetectorConfig {

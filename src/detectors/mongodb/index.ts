@@ -2,6 +2,7 @@ import Re2 from "re2";
 import { MongoClient } from "mongodb";
 import { Detector, ScanResult } from "../../types/detector";
 import { isFalsePositive } from "../../util";
+import { DB_CONNECTION_TIMEOUT } from "../../constants";
 
 const keywords: string[] = ["mongodb"];
 const keyPattern = new Re2(
@@ -31,7 +32,9 @@ const scan = async (
       continue;
 
     if (verify) {
-      const client = new MongoClient(resMatch);
+      const client = new MongoClient(resMatch, {
+        connectTimeoutMS: DB_CONNECTION_TIMEOUT,
+      });
       try {
         await client.connect();
         result.verified = true;
