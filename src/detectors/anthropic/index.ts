@@ -1,6 +1,6 @@
 import Re2 from "re2";
 import { Detector, ScanResult } from "../../types/detector";
-import axios from "axios";
+import { httpClient } from "../../util";
 
 const keywords = ["sk-ant-api03", "anthropic"];
 const keyPattern = new Re2(/\b(sk-ant-api03-[\w\-]{93}AA)\b/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.post(
+        await httpClient.post(
           "https://api.anthropic.com/v1/messages",
           {
             model: "claude-3-5-sonnet-20240620",

@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["discord"];
 const keyPattern: Re2 = new Re2(
@@ -44,7 +44,7 @@ const scan = async (
 
       if (verify) {
         try {
-          await axios.get(
+          await httpClient.get(
             `https://discord.com/api/v8/users/${botTokenUserId}`,
             {
               headers: {

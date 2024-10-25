@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["SG."];
 const keyPattern = new Re2(/\bSG\.[\w\-]{20,24}\.[\w\-]{39,50}\b/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.sendgrid.com/v3/scopes", {
+        await httpClient.get("https://api.sendgrid.com/v3/scopes", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

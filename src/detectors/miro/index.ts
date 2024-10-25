@@ -1,34 +1,37 @@
 import Re2 from "re2";
 import { Detector, ScanResult } from "../../types/detector";
+import { surroundWithGroups } from "../../regexHandler";
 import { httpClient } from "../../util";
 
-const keywords: string[] = ["npm_"];
-const keyPattern: Re2 = new Re2(`(npm_[0-9a-zA-Z]{36})`, "gi");
+const keywords: string[] = ["miro"];
+const keyPattern: Re2 = new Re2(
+  `${surroundWithGroups(keywords)}\\b([0-9a-zA-Z]{27})\\b`,
+  "gi"
+);
 
 const scan = async (
   verify: boolean | undefined,
   data: string
 ): Promise<ScanResult | null> => {
-  const matches = data.matchAll(keyPattern);
-  let result: ScanResult = { detectorType: "NPM", verified: false };
+  const keyPatternMatches = data.matchAll(keyPattern);
 
-  for (const match of matches) {
+  const result: ScanResult = { detectorType: "Miro", verified: false };
+
+  for (const match of keyPatternMatches) {
     if (match.length !== 2) continue;
 
-    const resMatch = match[1].trim();
+    const resMatch: string = match[1].trim();
     result.rawValue = resMatch;
     result.position = match.index;
-    result.extras = {
-      version: 2,
-    };
 
     if (verify) {
       try {
-        await httpClient.get("https://registry.npmjs.org/-/whoami", {
+        await httpClient.get("https://api.miro.com/v1/users/me", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },
         });
+
         result.verified = true;
       } catch (error) {}
     }
@@ -39,9 +42,9 @@ const scan = async (
   return null;
 };
 
-const detectorType = "NPM_V2_DETECTOR";
+const detectorType = "MIRO_DETECTOR";
 
-export const NpmV2Detector: Detector = {
+export const MiroDetector: Detector = {
   scan,
   keywords,
   detectorType,

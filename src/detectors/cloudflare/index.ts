@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["cloudflare"];
 const keyPattern: Re2 = new Re2(
@@ -15,7 +15,10 @@ const scan = async (
 ): Promise<ScanResult | null> => {
   const keyPatternMatches = data.matchAll(keyPattern);
 
-  const result: ScanResult = { detectorType: "Cloudflare", verified: false };
+  const result: ScanResult = {
+    detectorType: "Cloudflare API Token",
+    verified: false,
+  };
 
   for (const match of keyPatternMatches) {
     if (match.length !== 2) continue;
@@ -26,7 +29,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(
+        await httpClient.get(
           "https://api.cloudflare.com/client/v4/user/tokens/verify",
           {
             headers: {

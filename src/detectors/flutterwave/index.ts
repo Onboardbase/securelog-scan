@@ -1,18 +1,16 @@
 import Re2 from "re2";
-import { surroundWithGroups } from "../../regexHandler";
 import { Detector, ScanResult } from "../../types/detector";
 import { httpClient } from "../../util";
 
-const keywords: string[] = ["mailjet"];
-const regexGroup: string = surroundWithGroups(keywords);
-const keyPattern: Re2 = new Re2(regexGroup + /\b([A-Za-z0-9]{32})\b/, "gi");
+const keywords: string[] = ["FLWSECK-"];
+const keyPattern = new Re2("\\b(FLWSECK-[0-9a-z]{32}-X)\\b", "gi");
 
 const scan = async (
   verify: boolean | undefined,
   data: string
 ): Promise<ScanResult | null> => {
   const matches = data.matchAll(keyPattern);
-  const result: ScanResult = { detectorType: "Mailjet SMS", verified: false };
+  let result: ScanResult = { detectorType: "Flutterwave", verified: false };
 
   for (const match of matches) {
     if (match.length !== 2) continue;
@@ -23,9 +21,8 @@ const scan = async (
 
     if (verify) {
       try {
-        await httpClient.get("https://api.mailjet.com/v4/sms", {
+        await httpClient.get("https://api.flutterwave.com/v3/subaccounts", {
           headers: {
-            Accept: "application/vnd.mailjetsms+json; version=3",
             Authorization: `Bearer ${resMatch}`,
           },
         });
@@ -35,12 +32,13 @@ const scan = async (
 
     return result;
   }
+
   return null;
 };
 
-const detectorType = "MAILJET_SMS_DETECTOR";
+const detectorType = "FLUTTERWAVE_DETECTOR";
 
-export const MailjetSmsDetector: Detector = {
+export const FlutterwaveDetector: Detector = {
   scan,
   keywords,
   detectorType,

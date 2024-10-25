@@ -2,6 +2,7 @@ import Re2 from "re2";
 import { Client } from "pg";
 import { Detector, ScanResult } from "../../types/detector";
 import { isFalsePositive } from "../../util";
+import { DB_CONNECTION_TIMEOUT } from "../../constants";
 
 const keywords: string[] = ["postgres"];
 const keyPattern = new Re2(
@@ -33,6 +34,7 @@ const scan = async (
     if (verify) {
       const client = new Client({
         connectionString: resMatch,
+        connectionTimeoutMillis: DB_CONNECTION_TIMEOUT,
       });
       try {
         await client.connect();

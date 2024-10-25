@@ -9,12 +9,20 @@ import chalk from "chalk";
 import { ScanOptions, Config } from "./types";
 import { Detector, DetectorConfig } from "./types/detector";
 import { AhoCorasickCore } from "./ahocorasick";
+import { SecretCache } from "./secretCache";
 
 /**
  * Scan for secrets in a repository or directory based on the provided options.
  * @param options - The scanning options provided by the user.
  */
 export const scan = async (options: ScanOptions): Promise<void> => {
+  /**
+   * start tracking scan duration
+   *
+   * used to measure how long it took the CLI to complete scanning
+   */
+  SecretCache.startTracking();
+
   const startDirectory = options.dir || process.cwd();
   const excludedFolders = extractExcludedFolders(options.exclude);
   const commitLimit = parseInt(options.commits || "0", 10);
@@ -84,6 +92,22 @@ export const scan = async (options: ScanOptions): Promise<void> => {
     }
 
     await Promise.all(scanPromises);
+
+    /**
+     * stop tracking scan duration
+     */
+    SecretCache.stopTracking();
+
+    const scanDuration = SecretCache.getScanDuration();
+    console.log("");
+    console.log(
+      JSON.stringify({
+        scan_duration: scanDuration,
+        verified_secrets: SecretCache.getVerifiedSecretCount(),
+        unverified_secrets: SecretCache.getUnverifiedSecretCount(),
+        date: new Date(),
+      })
+    );
   } catch (error: any) {
     console.error(chalk.red(`Error scanning: ${error.message}`));
     process.exit(1);

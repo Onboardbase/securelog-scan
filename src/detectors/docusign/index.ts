@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["docusign"];
 const keyPattern: Re2 = new Re2(
@@ -51,7 +51,7 @@ const scan = async (
           const base64String = Buffer.from(`${clientId}:${secretId}`).toString(
             "base64"
           );
-          await axios.post(
+          await httpClient.post(
             "https://account.docusign.com/oauth/token",
             {
               grant_type: "client_credentials",

@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["coinapi"];
 const keyPattern: Re2 = new Re2(
@@ -26,7 +26,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://rest.coinapi.io/v1/exchanges", {
+        await httpClient.get("https://rest.coinapi.io/v1/exchanges", {
           headers: {
             "X-CoinAPI-Key": resMatch,
           },

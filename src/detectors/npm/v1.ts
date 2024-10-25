@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["npm"];
 const keyPattern: Re2 = new Re2(
@@ -30,7 +30,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://registry.npmjs.org/-/whoami", {
+        await httpClient.get("https://registry.npmjs.org/-/whoami", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

@@ -1,12 +1,11 @@
 import { spawn } from "child_process";
 import readline from "readline";
 import path from "path";
-import chalk from "chalk";
 import fs from "fs";
-import { getActualGitURLFilePath, maskString } from "./util";
 import { AhoCorasickCore } from "./ahocorasick";
 import { CommitInfo, ChangedLine, ScanGitCommitsOptions } from "./types";
-import { ScanResult } from "./types/detector";
+import { EScannerTypes, ScanResult } from "./types/detector";
+import { EventManager } from "./events";
 
 /**
  * Run a Git command and process the output line by line.
@@ -59,62 +58,17 @@ const scanLineForSecrets = async (
       const scanResponse = await scan(verify, line);
 
       if (scanResponse) {
-        logPotentialSecret(scanResponse, commitInfo, filePath, isUrl, mask);
+        EventManager.emitNewSecret({
+          ...scanResponse,
+          filePath,
+          mask,
+          isUrl,
+          scannerType: EScannerTypes.GIT_SCANNER,
+          commitInfo,
+        });
       }
     })
   );
-};
-
-/**
- * Log potential secrets found during scanning.
- */
-const logPotentialSecret = (
-  scanResponse: ScanResult,
-  commitInfo: CommitInfo,
-  filePath: string,
-  isUrl: boolean,
-  mask: boolean | undefined
-): void => {
-  console.log(
-    chalk.greenBright.bold(
-      `${
-        scanResponse.verified
-          ? "\n💯 Found verified secret in git commit:"
-          : `\nPotential secret detected in git commit:`
-      }`
-    )
-  );
-  console.log(`${chalk.bold("Detector:")} ${scanResponse.detectorType}`);
-  console.log(
-    `${chalk.bold("File:")} ${
-      isUrl ? getActualGitURLFilePath(filePath) : filePath
-    }`
-  );
-  console.log(`${chalk.bold("Line:")} ${commitInfo.lineNumber}`);
-  console.log(
-    `${chalk.bold("Raw Value:")} ${
-      mask
-        ? maskString(scanResponse.rawValue as string)
-        : (scanResponse.rawValue as String)
-    }`
-  );
-  console.log(`${chalk.bold("Hash:")} ${commitInfo.hash}`);
-  console.log(
-    `${chalk.bold("Author:")} ${commitInfo.authorName} <${
-      commitInfo.authorEmail
-    }>`
-  );
-  console.log(`${chalk.bold("Commit:")} ${commitInfo.title}`);
-  console.log(
-    `${chalk.bold(
-      "help:"
-    )} run sls git-rewrite --secret "secrets to remove from git history`
-  );
-  if (scanResponse.extras) {
-    for (const [key, value] of Object.entries(scanResponse.extras)) {
-      console.log(`${chalk.bold(`${key}:`)} ${value || ""}`);
-    }
-  }
 };
 
 const getChangedLinesWithDetails = async (

@@ -2,27 +2,33 @@ import Re2 from "re2";
 import { Detector, ScanResult } from "../../types/detector";
 import { httpClient } from "../../util";
 
-const keywords: string[] = ["apify"];
-const keyPattern = new Re2(/\b(apify_api_[a-zA-Z0-9]{36})\b/, "gi");
+const keywords: string[] = ["-us", "mailchimp"];
+const keyPattern = new Re2(`[0-9a-f]{32}-us[0-9]{1,2}`, "gi");
 
 const scan = async (
   verify: boolean | undefined,
   data: string
 ): Promise<ScanResult | null> => {
   const matches = data.matchAll(keyPattern);
-  const result: ScanResult = { detectorType: "Apify", verified: false };
+  let result: ScanResult = { detectorType: "Mailchimp", verified: false };
 
   for (const match of matches) {
-    if (match.length !== 2) continue;
-
-    const resMatch: string = match[1].trim();
+    if (!match) continue;
+    const resMatch = match[0].trim();
     result.rawValue = resMatch;
     result.position = match.index;
+
+    const mailChimpDatacenter = resMatch.split("-")[1];
 
     if (verify) {
       try {
         await httpClient.get(
-          `https://api.apify.com/v2/acts?token=${resMatch}&my=true&offset=10&limit=99&desc=true`
+          `https://${mailChimpDatacenter}.api.mailchimp.com/3.0/`,
+          {
+            headers: {
+              Authorization: `Bearer ${resMatch}`,
+            },
+          }
         );
         result.verified = true;
       } catch (error) {}
@@ -34,9 +40,9 @@ const scan = async (
   return null;
 };
 
-const detectorType = "APIFY_DETECTOR";
+const detectorType = "MAILCHIMP_DETECTOR";
 
-export const ApifyDetector: Detector = {
+export const MailchimpDetector: Detector = {
   scan,
   keywords,
   detectorType,

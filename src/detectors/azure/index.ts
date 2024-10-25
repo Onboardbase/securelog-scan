@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { URLSearchParams } from "url";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["azure"];
 
@@ -54,7 +54,7 @@ const scan = async (
           params.append("scope", "https://graph.microsoft.com/.default");
 
           try {
-            await axios.post(tokenEndpoint, params);
+            await httpClient.post(tokenEndpoint, params);
             result.verified = true;
           } catch (error) {}
         }

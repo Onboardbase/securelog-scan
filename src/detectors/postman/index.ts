@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["postman", "PMAK-"];
 const keyPattern = new Re2(/\b(PMAK-[a-zA-Z0-9]{59})\b/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.getpostman.com/collections", {
+        await httpClient.get("https://api.getpostman.com/collections", {
           headers: {
             "x-api-key": resMatch,
           },

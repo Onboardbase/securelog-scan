@@ -1,7 +1,7 @@
 import Re2 from "re2";
 import { surroundWithGroups } from "../../regexHandler";
 import { Detector, ScanResult } from "../../types/detector";
-import axios from "axios";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["algolia"];
 const regexGroup: string = surroundWithGroups(keywords);
@@ -29,7 +29,7 @@ const scan = async (
       const secretMatchValue = secretMatch[1].trim();
       if (verify) {
         try {
-          await axios.get(
+          await httpClient.get(
             `https://${secretMatchValue}-dsn.algolia.net/1/keys`,
             {
               headers: {

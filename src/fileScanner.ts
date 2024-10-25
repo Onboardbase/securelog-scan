@@ -1,15 +1,11 @@
 import fs from "fs";
 import path from "path";
-import chalk from "chalk";
-import {
-  getActualGitURLFilePath,
-  isBinaryFile,
-  maskString,
-  getLineNumber,
-} from "./util";
+import { isBinaryFile, maskString, getLineNumber } from "./util";
 import { AhoCorasickCore } from "./ahocorasick";
 import { MAX_FILE_SIZE } from "./constants";
 import { ScanDirectoryOptions } from "./types";
+import { EventManager } from "./events";
+import { EScannerTypes } from "./types/detector";
 
 const scanFileForSecrets = async (
   filePath: string,
@@ -23,6 +19,14 @@ const scanFileForSecrets = async (
   await processPossibleSecrets(filePath, trimmedFile, verify, core, mask, url);
 };
 
+/**
+ *
+ * @todo
+ * make core optional and rebuild core if its not passed,
+ * this should cater for the securelog SDK that might need this function exposed
+ *
+ * also have an argument to choose to log (on the cli) or return raw string on the SDK
+ */
 export const processPossibleSecretsInString = async (
   rawValue: string,
   core: AhoCorasickCore
@@ -66,67 +70,20 @@ const processPossibleSecrets = async (
       const { scan } = detector;
       const scanResponse = await scan(verify, trimmedFile);
       if (scanResponse) {
-        const line =
-          scanResponse.position !== undefined
-            ? getLineNumber(trimmedFile, scanResponse.position)
-            : 1;
-
-        logPotentialSecret(
+        const line = scanResponse.position
+          ? getLineNumber(trimmedFile, scanResponse.position)
+          : 1;
+        EventManager.emitNewSecret({
+          ...scanResponse,
+          position: line,
           filePath,
-          line,
-          scanResponse.detectorType,
-          mask
-            ? maskString(scanResponse.rawValue as string)
-            : (scanResponse.rawValue as string),
-          scanResponse.verified,
-          url || null,
-          scanResponse.extras
-        );
+          mask,
+          url,
+          scannerType: EScannerTypes.FILE_SCANNER,
+        });
       }
     })
   );
-};
-
-/**
- * Logs detected secrets in the console.
- */
-const logPotentialSecret = (
-  filePath: string,
-  line: number,
-  detector: string,
-  rawValue: string,
-  verified: boolean,
-  url: string | null,
-  extras?: Record<string, string>
-): void => {
-  console.log(
-    chalk.greenBright.bold(
-      `${
-        verified
-          ? "\n💯 Found verified secret"
-          : `\nPotential secret detected in ${
-              url || filePath === "" ? "RawValue" : filePath
-            }`
-      }`
-    )
-  );
-  console.log(`${chalk.bold("Detector:")} ${detector}`);
-  console.log(`${chalk.bold("Line:")} ${line}`);
-  if (filePath !== "") {
-    console.log(
-      `${chalk.bold("File Path:")} ${
-        url ? getActualGitURLFilePath(filePath) : filePath
-      }`
-    );
-  }
-
-  console.log(`${chalk.bold("Raw Value:")} ${rawValue}${extras ? "" : "\n"}`);
-
-  if (extras) {
-    for (const [key, value] of Object.entries(extras)) {
-      console.log(`${chalk.bold(`${key}:`)} ${value || ""}`);
-    }
-  }
 };
 
 /**

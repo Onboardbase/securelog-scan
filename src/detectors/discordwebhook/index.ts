@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["https://discord.com/api/webhooks/"];
 const keyPattern = new Re2(
@@ -28,7 +28,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(resMatch);
+        await httpClient.get(resMatch);
         result.verified = true;
       } catch (error) {}
     }

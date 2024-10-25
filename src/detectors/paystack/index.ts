@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["paystack", "sk_"];
 const keyPattern = new Re2(/\bsk\_[a-z]{1,}\_[A-Za-z0-9]{40}\b/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.paystack.co/customer", {
+        await httpClient.get("https://api.paystack.co/customer", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

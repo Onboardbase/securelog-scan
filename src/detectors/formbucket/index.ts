@@ -3,9 +3,11 @@ import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
 import { httpClient } from "../../util";
 
-const keywords: string[] = ["coinbase"];
+const keywords: string[] = ["formbucket"];
 const keyPattern: Re2 = new Re2(
-  `${surroundWithGroups(keywords)}\\b([a-zA-Z-0-9]{64})\\b`,
+  `${surroundWithGroups(
+    keywords
+  )}\\b([0-9A-Za-z]{1,}.[0-9A-Za-z]{1,}\\.[0-9A-Z-a-z\\-_]{1,})`,
   "gi"
 );
 
@@ -15,7 +17,7 @@ const scan = async (
 ): Promise<ScanResult | null> => {
   const keyPatternMatches = data.matchAll(keyPattern);
 
-  const result: ScanResult = { detectorType: "Coinbase", verified: false };
+  const result: ScanResult = { detectorType: "Formbucket", verified: false };
 
   for (const match of keyPatternMatches) {
     if (match.length !== 2) continue;
@@ -26,7 +28,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await httpClient.get("https://api.coinbase.com/v2/user", {
+        await httpClient.get("https://www.formbucket.com/v1/profile", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },
@@ -42,9 +44,9 @@ const scan = async (
   return null;
 };
 
-const detectorType = "COINBASE_DETECTOR";
+const detectorType = "FORMBUCKET_DETECTOR";
 
-export const CoinbaseDetector: Detector = {
+export const FormBucketDetector: Detector = {
   scan,
   keywords,
   detectorType,
