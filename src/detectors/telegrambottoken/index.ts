@@ -3,9 +3,12 @@ import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
 import { httpClient } from "../../util";
 
-const keywords: string[] = ["circle"];
+const keywords: string[] = ["telegram", "tgram"];
 const keyPattern: Re2 = new Re2(
-  `${surroundWithGroups(keywords)}([a-fA-F0-9]{40})`,
+  `${surroundWithGroups([
+    "telegram",
+    "tgram://",
+  ])}\\b([0-9]{8,10}:[a-zA-Z0-9_-]{35})\\b`,
   "gi"
 );
 
@@ -15,7 +18,10 @@ const scan = async (
 ): Promise<ScanResult | null> => {
   const keyPatternMatches = data.matchAll(keyPattern);
 
-  const result: ScanResult = { detectorType: "Circle CI", verified: false };
+  const result: ScanResult = {
+    detectorType: "Telegram Bot Token",
+    verified: false,
+  };
 
   for (const match of keyPatternMatches) {
     if (match.length !== 2) continue;
@@ -26,13 +32,14 @@ const scan = async (
 
     if (verify) {
       try {
-        await httpClient.get("https://circleci.com/api/v2/me", {
-          headers: {
-            "Circle-Token": resMatch,
-          },
-        });
+        const { data } = await httpClient.get(
+          `https://api.telegram.org/bot${resMatch}/getMe`
+        );
 
         result.verified = true;
+        result.extras = {
+          username: data.result.username,
+        };
       } catch (error) {}
     }
 
@@ -42,9 +49,9 @@ const scan = async (
   return null;
 };
 
-const detectorType = "CIRCLECI_DETECTOR";
+const detectorType = "TELEGRAM_BOT_TOKEN_DETECTOR";
 
-export const CircleCiDetector: Detector = {
+export const TelegramBotTokenDetector: Detector = {
   scan,
   keywords,
   detectorType,

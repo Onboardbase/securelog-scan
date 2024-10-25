@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 // https://docs.digitalocean.com/reference/api/api-reference/#section/Authentication
 const keywords: string[] = ["dop_v1_", "doo_v1_", "dor_v1_"];
@@ -30,13 +30,13 @@ const scan = async (
     if (verify) {
       try {
         if (resMatch.startsWith("dor_v1_")) {
-          await axios.get(
+          await httpClient.get(
             `https://cloud.digitalocean.com/v1/oauth/token?grant_type=refresh_token&refresh_token=${resMatch}`
           );
         }
 
         if (resMatch.startsWith("doo_v1_") || resMatch.startsWith("dop_v1_")) {
-          await axios.get("https://api.digitalocean.com/v2/account", {
+          await httpClient.get("https://api.digitalocean.com/v2/account", {
             headers: {
               Authorization: `Bearer ${resMatch}`,
             },

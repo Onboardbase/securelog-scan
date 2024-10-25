@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["ATCTT3xFfG"];
 const keyPattern = new Re2(
@@ -27,14 +27,11 @@ const scan = async (
 
     if (verify) {
       try {
-        const { data } = await axios.get(
-          "https://api.atlassian.com/admin/v1/orgs",
-          {
-            headers: {
-              Authorization: `Bearer ${resMatch}`,
-            },
-          }
-        );
+        await httpClient.get("https://api.atlassian.com/admin/v1/orgs", {
+          headers: {
+            Authorization: `Bearer ${resMatch}`,
+          },
+        });
 
         result.verified = true;
       } catch (error) {}

@@ -1,5 +1,7 @@
 import os from "os";
 import path from "path";
+import axios, { AxiosInstance } from "axios";
+import { HTTP_REQUEST_TIMEOUT } from "./constants";
 
 export const getActualGitURLFilePath = (
   filePath: string
@@ -109,3 +111,7 @@ export const isFalsePositive = (
 
   return { isFalsePositive: false };
 };
+
+export const httpClient: AxiosInstance = axios.create({
+  timeout: HTTP_REQUEST_TIMEOUT,
+});

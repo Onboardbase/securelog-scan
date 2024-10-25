@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["ya29."];
 const keyPattern = new Re2(/ya29\.[\w\-\.]+/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(
+        await httpClient.get(
           `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${resMatch}`
         );
 

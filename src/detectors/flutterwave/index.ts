@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["FLWSECK-"];
 const keyPattern = new Re2("\\b(FLWSECK-[0-9a-z]{32}-X)\\b", "gi");
@@ -21,7 +21,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.flutterwave.com/v3/subaccounts", {
+        await httpClient.get("https://api.flutterwave.com/v3/subaccounts", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

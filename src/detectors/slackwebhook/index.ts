@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["hooks.slack.com"];
 const keyPatterns: Record<string, Re2> = {
@@ -38,7 +38,7 @@ const scan = async (
            * Note: This sends a real message to the webhook detected, meaning a slack channel
            * somewhere is receiving a test message anytime this is verified
            */
-          await axios.post(resMatch, {
+          await httpClient.post(resMatch, {
             text: "Secret Detection Test message from Securelog Scan CLI",
           });
           result.verified = true;

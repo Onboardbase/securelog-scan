@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["rk_live", "rk_test"];
 
@@ -27,7 +27,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.stripe.com/v1/charges", {
+        await httpClient.get("https://api.stripe.com/v1/charges", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

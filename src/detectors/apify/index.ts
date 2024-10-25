@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["apify"];
 const keyPattern = new Re2(/\b(apify_api_[a-zA-Z0-9]{36})\b/, "gi");
@@ -21,7 +21,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(
+        await httpClient.get(
           `https://api.apify.com/v2/acts?token=${resMatch}&my=true&offset=10&limit=99&desc=true`
         );
         result.verified = true;

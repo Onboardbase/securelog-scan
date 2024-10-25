@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { surroundWithGroups } from "../../regexHandler";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["mux"];
 const regexGroup: string = surroundWithGroups(keywords);
@@ -36,7 +36,7 @@ const scan = async (
       const secretMatchValue = secretMatch[1].trim();
       if (verify) {
         try {
-          await axios.get("https://api.mux.com/video/v1/assets", {
+          await httpClient.get("https://api.mux.com/video/v1/assets", {
             auth: {
               username: resMatch,
               password: secretMatchValue,

@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["notion"];
 const keyPattern: Re2 = new Re2("\\b(secret_[A-Za-z0-9]{43})\\b", "gi");
@@ -21,7 +21,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.notion.com/v1/users", {
+        await httpClient.get("https://api.notion.com/v1/users", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
             "Notion-Version": "2022-06-28",

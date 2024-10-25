@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { surroundWithGroups } from "../../regexHandler";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["mixpanel"];
 const regexGroup: string = surroundWithGroups(keywords);
@@ -33,7 +33,7 @@ const scan = async (
       const secretMatchValue = secretMatch[1].trim();
       if (verify) {
         try {
-          await axios.get("https://mixpanel.com/api/app/me", {
+          await httpClient.get("https://mixpanel.com/api/app/me", {
             auth: {
               username: secretMatchValue,
               password: resMatch,

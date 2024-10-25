@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["chatbot"];
 const keyPattern: Re2 = new Re2(
@@ -26,7 +26,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.chatbot.com/stories", {
+        await httpClient.get("https://api.chatbot.com/stories", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },

@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["xoxb-", "xoxp-", "xoxa-", "xoxr-"];
 const keyPatterns: Record<string, Re2> = {
@@ -42,11 +42,14 @@ const scan = async (
 
       if (verify) {
         try {
-          const response = await axios.get("https://slack.com/api/auth.test", {
-            headers: {
-              Authorization: `Bearer ${resMatch}`,
-            },
-          });
+          const response = await httpClient.get(
+            "https://slack.com/api/auth.test",
+            {
+              headers: {
+                Authorization: `Bearer ${resMatch}`,
+              },
+            }
+          );
           if (response.data.ok === true) result.verified = true;
         } catch (error) {}
       }

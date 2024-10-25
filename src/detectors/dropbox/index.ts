@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["sl."];
 const keyPattern = new Re2(/\b(sl\.[A-Za-z0-9\-\_]{130,140})\b/, "gi");
@@ -20,7 +20,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(
+        await httpClient.get(
           "https://api.dropboxapi.com/2/users/get_current_account",
           {
             headers: {

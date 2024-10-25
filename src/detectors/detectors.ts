@@ -17,6 +17,7 @@ import { CodeClimateDetector } from "./codeclimate";
 import { CoinApiDetector } from "./coinapi";
 import { CoinbaseDetector } from "./coinbase";
 import { ConfluentDetector } from "./confluent";
+import { DatadogTokenDetector } from "./datadogtoken";
 import { DigitaloceanV1Detector } from "./digitalocean/v1";
 import { DigitaloceanV2Detector } from "./digitalocean/v2";
 import { DiscordBotTokenDetector } from "./discordbottoken";
@@ -56,6 +57,7 @@ import { SendgridDetector } from "./sendgrid";
 import { SlackDetector } from "./slack";
 import { SlackWebhooksDetector } from "./slackwebhook";
 import { StripeDetector } from "./stripe";
+import { TelegramBotTokenDetector } from "./telegrambottoken";
 
 export const detectors: Detector[] = [
   AgoraDetector,
@@ -115,4 +117,6 @@ export const detectors: Detector[] = [
   FlutterwaveDetector,
   FormBucketDetector,
   CircleCiDetector,
+  DatadogTokenDetector,
+  TelegramBotTokenDetector,
 ];

@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["okta"];
 const domainPattern = new Re2(
@@ -30,7 +30,7 @@ const scan = async (
       if (verify) {
         const url = `https://${domain}/api/v1/users/me`;
         try {
-          const response = await axios.get(url, {
+          const response = await httpClient.get(url, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",

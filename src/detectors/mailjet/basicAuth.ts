@@ -1,7 +1,7 @@
 import Re2 from "re2";
-import axios from "axios";
 import { surroundWithGroups } from "../../regexHandler";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["mailjet"];
 const regexGroup: string = surroundWithGroups(["mailjet"]);
@@ -27,7 +27,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get("https://api.mailjet.com/v3/REST/message", {
+        await httpClient.get("https://api.mailjet.com/v3/REST/message", {
           headers: {
             Authorization: `Basic ${resMatch}`,
           },

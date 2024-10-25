@@ -1,6 +1,6 @@
 import Re2 from "re2";
-import axios from "axios";
 import { Detector, ScanResult } from "../../types/detector";
+import { httpClient } from "../../util";
 
 const keywords: string[] = ["-us", "mailchimp"];
 const keyPattern = new Re2(`[0-9a-f]{32}-us[0-9]{1,2}`, "gi");
@@ -22,7 +22,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await axios.get(
+        await httpClient.get(
           `https://${mailChimpDatacenter}.api.mailchimp.com/3.0/`,
           {
             headers: {
