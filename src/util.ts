@@ -14,6 +14,13 @@ export const getActualGitURLFilePath = (
   return undefined;
 };
 
+export const prefixPathWithBaseUrl = (
+  baseUrl: string,
+  path: string
+): string => {
+  return `${baseUrl}/${path}`;
+};
+
 export const isBinaryFile = (filePath: string): boolean => {
   const binaryExtensions = new Set([
     ".png",

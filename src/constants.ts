@@ -1,3 +1,3 @@
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 export const GIT_HTTP_MAX_REQUEST_BUFFER = 734003200; // 700 MB
-export const HTTP_REQUEST_TIMEOUT = 10000;
+export const HTTP_REQUEST_TIMEOUT = 10000; // 10 SECS

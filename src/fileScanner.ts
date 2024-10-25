@@ -6,6 +6,7 @@ import {
   isBinaryFile,
   maskString,
   getLineNumber,
+  prefixPathWithBaseUrl,
 } from "./util";
 import { AhoCorasickCore } from "./ahocorasick";
 import { MAX_FILE_SIZE } from "./constants";
@@ -113,7 +114,7 @@ const logPotentialSecret = (
         verified
           ? "\n💯 Found verified secret"
           : `\nPotential secret detected in ${
-              url || filePath === "" ? "RawValue" : filePath
+              url ? url : filePath === "" ? "RawValue" : filePath
             }`
       }`
     )
@@ -123,7 +124,12 @@ const logPotentialSecret = (
   if (filePath !== "") {
     console.log(
       `${chalk.bold("File Path:")} ${
-        url ? getActualGitURLFilePath(filePath) : filePath
+        url
+          ? prefixPathWithBaseUrl(
+              url,
+              getActualGitURLFilePath(filePath) as string
+            )
+          : filePath
       }`
     );
   }

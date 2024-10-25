@@ -15,7 +15,10 @@ const scan = async (
 ): Promise<ScanResult | null> => {
   const keyPatternMatches = data.matchAll(keyPattern);
 
-  const result: ScanResult = { detectorType: "Cloudflare", verified: false };
+  const result: ScanResult = {
+    detectorType: "Cloudflare API Token",
+    verified: false,
+  };
 
   for (const match of keyPatternMatches) {
     if (match.length !== 2) continue;
