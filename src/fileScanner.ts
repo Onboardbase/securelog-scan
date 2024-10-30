@@ -3,7 +3,7 @@ import path from "path";
 import { isBinaryFile, maskString, getLineNumber } from "./util";
 import { AhoCorasickCore } from "./ahocorasick";
 import { MAX_FILE_SIZE } from "./constants";
-import { ScanDirectoryOptions } from "./types";
+import { ScanDirectoryOptions, ScanOptions } from "./types";
 import { EventManager } from "./events";
 import { EScannerTypes } from "./types/detector";
 
@@ -28,11 +28,21 @@ const scanFileForSecrets = async (
  * also have an argument to choose to log (on the cli) or return raw string on the SDK
  */
 export const processPossibleSecretsInString = async (
-  rawValue: string,
+  options: ScanOptions,
   core: AhoCorasickCore
 ) => {
-  if (rawValue === "") return;
+  const { rawValue, file, updateFile } = options;
+
+  if (!rawValue || (rawValue === "" && !file)) {
+    console.error("A rawValue or file has to be passed");
+    process.exit(1);
+  }
+
   let modifiedValue = rawValue;
+  if (file && fs.existsSync(file)) {
+    modifiedValue = fs.readFileSync(file, "utf8").trim();
+  }
+
   const detectors = core.findMatchingDetectors(rawValue);
 
   await Promise.all(
@@ -48,7 +58,10 @@ export const processPossibleSecretsInString = async (
     })
   );
 
-  console.log(modifiedValue);
+  if (file && updateFile) {
+    fs.writeFileSync(file, modifiedValue, "utf8");
+    console.log("File content updated successfully");
+  } else console.log(modifiedValue);
 };
 
 /**

@@ -30,6 +30,8 @@ program
   )
   .option("-m, --mask", "Should mask secret values", false)
   .option("--rawValue <string>", "a text string to scan for secrets")
+  .option("--file <string>", "A file path to update and remove secret string")
+  .option("--updateFile", "Should update file with masked secrets", false)
   .action(async (options) => await scan(options));
 
 program

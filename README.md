@@ -159,6 +159,12 @@ sls scan --dir ./my-project --exclude dist,node_modules --config ./config.yml --
 sls scan --rawValue "raw secret values"
 ```
 
+you can also scan from a file and write the contents of the file using the command below
+
+```bash
+sls scan --file "path/to/file" --updateFile # --updateFile will rewrite the contents of the file by masking secrets values inside the file
+```
+
 ---
 
 # Output
