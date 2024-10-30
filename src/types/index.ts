@@ -11,6 +11,8 @@ export interface ScanOptions {
   verify?: boolean;
   mask?: boolean;
   rawValue?: string;
+  file?: string;
+  updateFile?: boolean;
 }
 
 export interface Config {

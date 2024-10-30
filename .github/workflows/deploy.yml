@@ -40,11 +40,10 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.LATEST_TAG }}
-          release_name: Release ${{ env.LATEST_TAG }}
+          tag_name: ${{ steps.get_tag.outputs.LATEST_TAG }}
+          release_name: Release ${{ steps.get_tag.outputs.LATEST_TAG }}
           body: "New Release"
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LATEST_TAG: ${{ env.LATEST_TAG }}

@@ -35,7 +35,14 @@ export const scan = async (options: ScanOptions): Promise<void> => {
 
     const core = new AhoCorasickCore(customDetectors);
 
-    console.log(chalk.bold.greenBright("Securelog scanning, please wait..."));
+    /**
+     * do not display this if options.rawValue is being passed
+     *
+     * that is because the user might be passing the direct response
+     */
+
+    if (!options.rawValue)
+      console.log(chalk.bold.greenBright("Securelog scanning, please wait..."));
 
     const scanPromises: Promise<void>[] = [];
 
@@ -48,7 +55,7 @@ export const scan = async (options: ScanOptions): Promise<void> => {
     }
 
     if (options.rawValue && !options.dir && !options.url) {
-      scanPromises.push(processPossibleSecretsInString(options.rawValue, core));
+      scanPromises.push(processPossibleSecretsInString(options, core));
     }
 
     /**
@@ -77,7 +84,11 @@ export const scan = async (options: ScanOptions): Promise<void> => {
       );
     }
 
-    if (isGitDirectoryPresent(startDirectory) && !options.url) {
+    if (
+      isGitDirectoryPresent(startDirectory) &&
+      !options.url &&
+      !options.rawValue
+    ) {
       scanPromises.push(
         scanGitCommits(
           startDirectory,
@@ -98,16 +109,13 @@ export const scan = async (options: ScanOptions): Promise<void> => {
      */
     SecretCache.stopTracking();
 
-    const scanDuration = SecretCache.getScanDuration();
-    console.log("");
-    console.log(
-      JSON.stringify({
-        scan_duration: scanDuration,
-        verified_secrets: SecretCache.getVerifiedSecretCount(),
-        unverified_secrets: SecretCache.getUnverifiedSecretCount(),
-        date: new Date(),
-      })
-    );
+    if (!options.rawValue) {
+      const scanDuration = SecretCache.getScanDuration();
+      console.log("");
+      console.log(
+        `Scan duration: ${scanDuration}, Verified secrets: ${SecretCache.getVerifiedSecretCount()}, Unverified secrets: ${SecretCache.getUnverifiedSecretCount()}, Date: ${new Date()}`
+      );
+    }
   } catch (error: any) {
     console.error(chalk.red(`Error scanning: ${error.message}`));
     process.exit(1);
