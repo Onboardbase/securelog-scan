@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { processPossibleSecretsInString, scanDirectory } from "./fileScanner";
+import { scanDirectory } from "./fileScanner";
 import { scanGitCommitsForSecrets } from "./gitScanner";
 import { configHandler } from "./configHandler";
 import { buildCustomDetectors } from "./regexHandler";
@@ -41,22 +41,9 @@ export const scan = async (options: ScanOptions): Promise<void> => {
      * that is because the user might be passing the direct response
      */
 
-    if (!options.rawValue)
-      console.log(chalk.bold.greenBright("Securelog scanning, please wait..."));
+    console.log(chalk.bold.greenBright("Securelog scanning, please wait..."));
 
     const scanPromises: Promise<void>[] = [];
-
-    if (options.rawValue && options.dir) {
-      console.log(
-        chalk.yellow(
-          "info: --rawValue & --dir was specified, defaulting to --dir"
-        )
-      );
-    }
-
-    if (options.rawValue && !options.dir && !options.url) {
-      scanPromises.push(processPossibleSecretsInString(options, core));
-    }
 
     /**
      * Remote git scanning
@@ -84,11 +71,7 @@ export const scan = async (options: ScanOptions): Promise<void> => {
       );
     }
 
-    if (
-      isGitDirectoryPresent(startDirectory) &&
-      !options.url &&
-      !options.rawValue
-    ) {
+    if (isGitDirectoryPresent(startDirectory) && !options.url) {
       scanPromises.push(
         scanGitCommits(
           startDirectory,
@@ -109,13 +92,11 @@ export const scan = async (options: ScanOptions): Promise<void> => {
      */
     SecretCache.stopTracking();
 
-    if (!options.rawValue) {
-      const scanDuration = SecretCache.getScanDuration();
-      console.log("");
-      console.log(
-        `Scan duration: ${scanDuration}, Verified secrets: ${SecretCache.getVerifiedSecretCount()}, Unverified secrets: ${SecretCache.getUnverifiedSecretCount()}, Date: ${new Date()}`
-      );
-    }
+    const scanDuration = SecretCache.getScanDuration();
+    console.log("");
+    console.log(
+      `Scan duration: ${scanDuration}, Verified secrets: ${SecretCache.getVerifiedSecretCount()}, Unverified secrets: ${SecretCache.getUnverifiedSecretCount()}, Date: ${new Date()}`
+    );
   } catch (error: any) {
     console.error(chalk.red(`Error scanning: ${error.message}`));
     process.exit(1);
@@ -137,7 +118,7 @@ const extractExcludedFolders = (exclude?: string): string[] => {
 /**
  * Merges user configuration with defaults, including excluded folders.
  */
-const mergeConfigWithUserOptions = (
+export const mergeConfigWithUserOptions = (
   configFile: string | undefined,
   excludedFolders: string[]
 ): Config | undefined => {
@@ -153,8 +134,8 @@ const mergeConfigWithUserOptions = (
 /**
  * Builds custom regex detectors from user configuration.
  */
-const buildCustomDetectorsFromConfig = (
-  config: Config | undefined
+export const buildCustomDetectorsFromConfig = (
+  config?: Config | undefined
 ): Detector[] | undefined => {
   if (config && config.detectors) {
     const userConfigRexes = config?.detectors;

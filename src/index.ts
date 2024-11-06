@@ -5,6 +5,8 @@ import pkg from "../package.json";
 import { scan } from "./scan";
 import { analyzers } from "./analyzers";
 import { removeSecretsFromGitHistory } from "./gitRewrite";
+import { scanString } from "./scanString";
+import { ScanOptions, ScanStringOptions } from "./types";
 
 const program = new Command();
 
@@ -29,10 +31,7 @@ program
     false
   )
   .option("-m, --mask", "Should mask secret values", false)
-  .option("--rawValue <string>", "a text string to scan for secrets")
-  .option("--file <string>", "A file path to update and remove secret string")
-  .option("--updateFile", "Should update file with masked secrets", false)
-  .action(async (options) => await scan(options));
+  .action(async (options: ScanOptions) => await scan(options));
 
 program
   .command("analyze")
@@ -68,5 +67,13 @@ program
   )
   .description("Remove secrets from git history")
   .action((options) => removeSecretsFromGitHistory(options.secrets));
+
+program
+  .command("scan-string")
+  .option("--rawValue <string>", "a text string to scan for secrets")
+  .option("--file <string>", "A file path to update and remove secret string")
+  .option("--updateFile", "Should update file with masked secrets", false)
+  .description("Scan secrets in a string")
+  .action((options: ScanStringOptions) => scanString(options));
 
 program.parse(process.argv);
