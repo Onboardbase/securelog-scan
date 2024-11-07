@@ -17,7 +17,7 @@ export interface ScanStringOptions {
   file?: string;
   updateFile?: boolean;
   config?: string;
-  outputFile: string;
+  outputFile?: string;
 }
 
 export interface Config {
