@@ -31,6 +31,12 @@ yarn global add securelog-scan # npm i -g securelog-scan
 
 ---
 
+## Installation via docker
+
+```bash
+docker pull ghcr.io/onboardbase/securelog-scan:main
+```
+
 ### Show Version
 
 ```bash
