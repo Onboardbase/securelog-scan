@@ -31,6 +31,12 @@ yarn global add securelog-scan # npm i -g securelog-scan
 
 ---
 
+## Installation via docker
+
+```bash
+docker pull ghcr.io/onboardbase/securelog-scan:main
+```
+
 ### Show Version
 
 ```bash
@@ -266,7 +272,7 @@ jobs:
 
 ```yaml
 securelog-scan:
-  image: ghcr.io/Onboardbase/securelog-scan:latest
+  image: ghcr.io/onboardbase/securelog-scan:latest
   script:
     - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
   variables:
@@ -285,7 +291,7 @@ pipelines:
   default:
     - step:
         name: Securelog Scan
-        image: ghcr.io/Onboardbase/securelog-scan:latest
+        image: ghcr.io/onboardbase/securelog-scan:latest
         script:
           - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
         variables:
