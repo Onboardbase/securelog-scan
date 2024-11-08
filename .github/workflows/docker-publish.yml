@@ -31,5 +31,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/onboardbase/securelog-scan:latest
+            ghcr.io/onboardbase/securelog-scan:${{ github.ref_name }}
