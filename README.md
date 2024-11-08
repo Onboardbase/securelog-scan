@@ -234,7 +234,7 @@ Securelog Scan allows you to run the to scan your codebase for secrets during CI
 
 ## Usage
 
-To use this workflow in your GitHub repository, reference it in your workflow file (e.g., `.github/workflows/secret-scan.yml`):
+## Github CI
 
 ```yaml
 name: Secret Scan
@@ -260,6 +260,41 @@ jobs:
           changed: "true" # Set to "false" to scan entire repository instead of just files that was changed (optional)
           mask: "true" # that is mask secret value e.g sk_******
           verify: "true" # that is verify potential secrets against their service provider
+```
+
+## GitLab CI
+
+```yaml
+securelog-scan:
+  image: ghcr.io/Onboardbase/securelog-scan:latest
+  script:
+    - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
+  variables:
+    EXCLUDE: ""
+    COMMITS: ""
+    CONFIG: ""
+    CHANGED: ""
+    MASK: ""
+    VERIFY: ""
+```
+
+## Bitbucket Pipelines
+
+```yaml
+pipelines:
+  default:
+    - step:
+        name: Securelog Scan
+        image: ghcr.io/Onboardbase/securelog-scan:latest
+        script:
+          - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
+        variables:
+          EXCLUDE: ""
+          COMMITS: ""
+          CONFIG: ""
+          CHANGED: ""
+          MASK: ""
+          VERIFY: ""
 ```
 
 # Analyzers

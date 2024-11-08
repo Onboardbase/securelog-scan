@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # This ensures we fetch all tags
 
       - uses: actions/setup-node@v3
         with:
@@ -18,32 +20,44 @@ jobs:
 
       - run: yarn build
 
+      # Get the version from package.json
+      - name: Get version
+        id: package_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       # Publish to npm
       - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
+
+      # Create git tag based on package version
+      - name: Create Git tag
+        run: |
+          git tag v${{ steps.package_version.outputs.VERSION }}
+          git push origin v${{ steps.package_version.outputs.VERSION }}
 
   release:
     needs: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          fetch-depth: 0 # This ensures we fetch all tags
 
       - name: Get latest tag
-        id: get_tag
-        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+        id: latest_tag
+        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
-        with:
-          tag_name: ${{ steps.get_tag.outputs.LATEST_TAG }}
-          release_name: Release ${{ steps.get_tag.outputs.LATEST_TAG }}
-          body: "New Release"
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.latest_tag.outputs.TAG }}
+          release_name: Release ${{ steps.latest_tag.outputs.TAG }}
+          body: |
+            Release for version ${{ steps.latest_tag.outputs.TAG }}
+
+            See the [changelog](./CHANGELOG.md) for details.
+          draft: false
+          prerelease: false
