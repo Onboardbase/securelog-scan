@@ -276,7 +276,7 @@ jobs:
 securelog-scan:
   image: ghcr.io/onboardbase/securelog-scan:latest
   script:
-    - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
+    - sls scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
   variables:
     EXCLUDE: ""
     COMMITS: ""
@@ -295,7 +295,7 @@ pipelines:
         name: Securelog Scan
         image: ghcr.io/onboardbase/securelog-scan:latest
         script:
-          - securelog-scan scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
+          - sls scan ${EXCLUDE:+ --exclude "${EXCLUDE}"} ${COMMITS:+ --commits "${COMMITS}"} ${CONFIG:+ --config "${CONFIG}"} ${CHANGED:+ --changed} ${VERIFY:+ --verify} ${MASK:+ --mask}
         variables:
           EXCLUDE: ""
           COMMITS: ""
