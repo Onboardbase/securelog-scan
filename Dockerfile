@@ -14,4 +14,4 @@ ENV PATH="/usr/local/bin:${PATH}"
 WORKDIR /app
 
 # Set the entrypoint
-ENTRYPOINT ["securelog-scan"]
+ENTRYPOINT ["sls"]
