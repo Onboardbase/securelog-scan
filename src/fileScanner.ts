@@ -74,6 +74,22 @@ export const processPossibleSecretsInString = async (
   if (!core) return modifiedValue;
 };
 
+export const scanStringAndReturnJson = async (options: ScanStringOptions) => {
+  const core = new AhoCorasickCore();
+  const detectors = core.findMatchingDetectors(options.rawValue as string);
+  const response = await Promise.all(
+    detectors.map(async (detector) => {
+      const { scan } = detector;
+      const scanResponse = await scan(false, options.rawValue as string);
+      if (scanResponse) {
+        return scanResponse;
+      }
+    })
+  );
+
+  return response;
+};
+
 /**
  * Processes possible secrets and checks for matches.
  */

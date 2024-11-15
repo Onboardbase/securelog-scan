@@ -97,6 +97,8 @@ export const scan = async (options: ScanOptions): Promise<void> => {
     console.log(
       `Scan duration: ${scanDuration}, Verified secrets: ${SecretCache.getVerifiedSecretCount()}, Unverified secrets: ${SecretCache.getUnverifiedSecretCount()}, Date: ${new Date()}`
     );
+
+    if (options.fail) process.exit(1);
   } catch (error: any) {
     console.error(chalk.red(`Error scanning: ${error.message}`));
     process.exit(1);
