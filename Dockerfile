@@ -9,6 +9,7 @@ RUN npm install -g securelog-scan
 
 # Make sure npm binaries are in PATH
 ENV PATH="/usr/local/bin:${PATH}"
+ENV FORCE_COLOR="1"
 
 # Set working directory
 WORKDIR /app

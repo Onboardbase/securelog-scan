@@ -10,6 +10,7 @@ export interface ScanOptions {
   changed?: boolean;
   verify?: boolean;
   mask?: boolean;
+  fail?: boolean;
 }
 
 export interface ScanStringOptions {
