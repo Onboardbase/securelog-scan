@@ -59,7 +59,7 @@ export const scan = async (options: ScanOptions): Promise<void> => {
      * only runs if --url is not specified that is user is not trying
      * to scan a git repo
      */
-    if (options.dir && !options.url) {
+    if (startDirectory && !options.url) {
       scanPromises.push(
         scanCodebase(
           startDirectory,
