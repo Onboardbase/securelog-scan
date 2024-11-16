@@ -31,6 +31,7 @@ program
     false
   )
   .option("-m, --mask", "Should mask secret values", false)
+  .option("-f, --fail", "Should exist with status code of 1", false)
   .action(async (options: ScanOptions) => await scan(options));
 
 program
