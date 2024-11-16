@@ -3,7 +3,7 @@ import { Detector, ScanResult } from "../../types/detector";
 import { httpClient } from "../../util";
 
 const keywords: string[] = ["postman", "PMAK-"];
-const keyPattern = new Re2(/\b(PMAK-[a-zA-Z0-9]{59})\b/, "gi");
+const keyPattern = new Re2(`\\b(PMAK-[a-zA-Z-0-9]{59})\\b`, "gi");
 
 const scan = async (
   verify: boolean | undefined,
