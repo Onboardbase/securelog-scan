@@ -3,7 +3,7 @@ import path from "path";
 import { isBinaryFile, maskString, getLineNumber } from "./util";
 import { AhoCorasickCore } from "./ahocorasick";
 import { MAX_FILE_SIZE } from "./constants";
-import { ScanDirectoryOptions, ScanOptions, ScanStringOptions } from "./types";
+import { ScanDirectoryOptions, ScanStringOptions } from "./types";
 import { EventManager } from "./events";
 import { Detector, EScannerTypes } from "./types/detector";
 
@@ -31,7 +31,8 @@ export const processPossibleSecretsInString = async (
   options: ScanStringOptions,
   core?: AhoCorasickCore
 ) => {
-  const { rawValue, file, updateFile, outputFile } = options;
+  const { rawValue, file, updateFile, outputFile, maskedValue, visibleChars } =
+    options;
 
   if (!rawValue || (rawValue === "" && !file)) {
     console.error("A rawValue or file has to be passed");
@@ -56,7 +57,10 @@ export const processPossibleSecretsInString = async (
       if (scanResponse) {
         modifiedValue = modifiedValue.replaceAll(
           scanResponse.rawValue as string,
-          maskString(scanResponse.rawValue as string)
+          maskString(scanResponse.rawValue as string, {
+            maskValue: maskedValue,
+            visibleChars,
+          })
         );
       }
     })

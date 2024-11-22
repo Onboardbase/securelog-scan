@@ -76,7 +76,12 @@ export const formatBytes = (bytes: number, decimals: number = 2): string => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
-export const maskString = (str: string, visibleChars: number = 5): string => {
+export const maskString = (
+  str: string,
+  options?: { maskValue?: string; visibleChars?: number }
+): string => {
+  const visibleChars = options?.visibleChars ?? 5;
+
   if (typeof str !== "string" || str.length === 0) {
     throw new Error("Invalid input: Input must be a non-empty string.");
   }
@@ -90,9 +95,9 @@ export const maskString = (str: string, visibleChars: number = 5): string => {
   }
 
   // make the masked chars only 10 characters
-  const maskedPart = "*".repeat(
-    str.length < 10 ? str.length : 10 - visibleChars
-  );
+  const maskedPart =
+    options?.maskValue ??
+    "*".repeat(str.length < 10 ? str.length : 10 - visibleChars);
   const visiblePart = str.slice(0, visibleChars);
   return visiblePart + maskedPart;
 };

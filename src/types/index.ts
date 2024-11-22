@@ -19,6 +19,8 @@ export interface ScanStringOptions {
   updateFile?: boolean;
   config?: string;
   outputFile?: string;
+  maskedValue?: string;
+  visibleChars?: number;
 }
 
 export interface Config {
