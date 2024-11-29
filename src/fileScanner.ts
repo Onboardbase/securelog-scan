@@ -54,7 +54,7 @@ export const processPossibleSecretsInString = async (
     detectors.map(async (detector) => {
       const { scan } = detector;
       const scanResponse = await scan(false, rawValue);
-      if (scanResponse) {
+      if (scanResponse && scanResponse.rawValue) {
         modifiedValue = modifiedValue.replaceAll(
           scanResponse.rawValue as string,
           maskString(scanResponse.rawValue as string, {
@@ -96,7 +96,7 @@ const processPossibleSecrets = async (
     detectors.map(async (detector) => {
       const { scan } = detector;
       const scanResponse = await scan(verify, trimmedFile);
-      if (scanResponse) {
+      if (scanResponse && scanResponse.rawValue) {
         const line = scanResponse.position
           ? getLineNumber(trimmedFile, scanResponse.position)
           : 1;

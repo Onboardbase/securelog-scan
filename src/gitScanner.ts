@@ -57,7 +57,7 @@ const scanLineForSecrets = async (
       const { scan } = detector;
       const scanResponse = await scan(verify, line);
 
-      if (scanResponse) {
+      if (scanResponse && scanResponse.rawValue) {
         EventManager.emitNewSecret({
           ...scanResponse,
           filePath,
