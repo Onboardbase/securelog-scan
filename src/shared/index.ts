@@ -16,7 +16,7 @@ export const redactSensitiveData = async (options: ScanStringOptions) => {
     detectors.map(async (detector) => {
       const { scan } = detector;
       const scanResponse = await scan(false, options.rawValue as string);
-      if (scanResponse) {
+      if (scanResponse && scanResponse.rawValue) {
         modifiedValue = modifiedValue?.replaceAll(
           scanResponse.rawValue as string,
           maskString(scanResponse.rawValue as string, {
@@ -40,7 +40,7 @@ export const scanStringAndReturnJson = async (options: ScanStringOptions) => {
     detectors.map(async (detector) => {
       const { scan } = detector;
       const scanResponse = await scan(false, options.rawValue as string);
-      if (scanResponse) {
+      if (scanResponse && scanResponse.rawValue) {
         return scanResponse;
       }
     })
