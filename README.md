@@ -165,7 +165,7 @@ sls scan --dir ./my-project --exclude dist,node_modules --config ./config.yml --
 sls scan-string --rawValue "raw secret values"
 ```
 
-A good usecase for this feature would be for LLMs, securelog can help you parse your inputs before sending to LLMs to make sure you are not sending texts with actual secrets. Make a post request to this endpoint to try it out [https://api.securelog.com/mask-secret](https://api.securelog.com/mask-secret)
+A good usecase for this feature would be for LLMs, securelog can help you parse your inputs before sending to LLMs to make sure you are not sending texts with actual secrets. Make a post request to this endpoint to try it out [https://api.securelog.com/mask-secret](https://api.securelog.com/mask-secret). Try out an example here llm.securelog.com
 
 you can also scan from a file and write the contents of the file using the command below
 
