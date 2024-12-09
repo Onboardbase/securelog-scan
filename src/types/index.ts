@@ -21,6 +21,7 @@ export interface ScanStringOptions {
   outputFile?: string;
   maskedValue?: string;
   visibleChars?: number;
+  customDetectors?: DetectorConfig[];
 }
 
 export interface Config {

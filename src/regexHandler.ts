@@ -50,6 +50,11 @@ const validateDetectorConfig = (config: DetectorConfig): void => {
   }
 
   if (errors.length > 0) {
+    /**
+     * @todo
+     * look into properly throwing an error to SDK and other
+     * shared utils
+     */
     errors.forEach((error) => console.error(chalk.red(`Error: ${error}`)));
     throw new Error("Invalid custom detector configuration.");
   }

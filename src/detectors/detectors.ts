@@ -17,6 +17,7 @@ import { CodeClimateDetector } from "./codeclimate";
 import { CoinApiDetector } from "./coinapi";
 import { CoinbaseDetector } from "./coinbase";
 import { ConfluentDetector } from "./confluent";
+import { CreditCardDetector } from "./creditcard";
 import { DatadogTokenDetector } from "./datadogtoken";
 import { DigitaloceanV1Detector } from "./digitalocean/v1";
 import { DigitaloceanV2Detector } from "./digitalocean/v2";
@@ -119,4 +120,5 @@ export const detectors: Detector[] = [
   CircleCiDetector,
   DatadogTokenDetector,
   TelegramBotTokenDetector,
+  CreditCardDetector,
 ];
