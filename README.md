@@ -120,6 +120,8 @@ Here is an example of what your config file might look like:
 
 > Note: Adding custom regex patterns, paths or extensions to exclude is optional and should be used for your specific need only. By default, these have already been added to the library.
 
+Build your [CUSTOM DETECTOR](./CUSTOM.md) for internal use.
+
 ---
 
 ```yaml
@@ -345,7 +347,7 @@ git push --force --tags
 
 # Contributing
 
-Feel free to contribute to this project by opening issues or submitting pull requests.
+Feel free to contribute to this project by opening issues or submitting pull requests. Contribute to [SECRET DETECTORS](./DETECTORS.md).
 
 # License
 
