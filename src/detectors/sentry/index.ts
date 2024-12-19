@@ -26,7 +26,7 @@ const scan = async (
 
     if (verify) {
       try {
-        await httpClient.get("https://api.vercel.com/www/user", {
+        await httpClient.get("https://sentry.io/api/0/projects/", {
           headers: {
             Authorization: `Bearer ${resMatch}`,
           },
