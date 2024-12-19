@@ -26,6 +26,7 @@ import { DiscordWebhookDetector } from "./discordwebhook";
 import { DisqusDetector } from "./disqus";
 import { DocusignDetector } from "./docusign";
 import { DropboxDetector } from "./dropbox";
+import { FacebookOAuthDetector } from "./facebookoauth";
 import { FlickrDetector } from "./flickr";
 import { FlutterwaveDetector } from "./flutterwave";
 import { FormBucketDetector } from "./formbucket";
@@ -55,10 +56,13 @@ import { PostgreSQLDetector } from "./postgres";
 import { PostmanDetector } from "./postman";
 import { RedisDetector } from "./redis";
 import { SendgridDetector } from "./sendgrid";
+import { SentryDetector } from "./sentry";
+import { ShopifyDetector } from "./shopify";
 import { SlackDetector } from "./slack";
 import { SlackWebhooksDetector } from "./slackwebhook";
 import { StripeDetector } from "./stripe";
 import { TelegramBotTokenDetector } from "./telegrambottoken";
+import { VercelDetector } from "./vercel";
 
 export const detectors: Detector[] = [
   AgoraDetector,
@@ -121,4 +125,8 @@ export const detectors: Detector[] = [
   DatadogTokenDetector,
   TelegramBotTokenDetector,
   CreditCardDetector,
+  VercelDetector,
+  FacebookOAuthDetector,
+  ShopifyDetector,
+  SentryDetector,
 ];
