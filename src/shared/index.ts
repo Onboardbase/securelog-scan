@@ -5,9 +5,10 @@
 
 import { AhoCorasickCore } from "../ahocorasick";
 import { buildCustomDetectors } from "../regexHandler";
-import { ScanStringOptions } from "../types";
+import { DataFormat, ScanStringOptions } from "../types";
 import { DetectorConfig } from "../types/detector";
 import { maskString } from "../util";
+import yaml from 'yaml';
 
 const handleCustomDetectors = (customDetectors?: DetectorConfig[]) => {
   const parsedDetectors = customDetectors?.length
@@ -63,3 +64,71 @@ export const scanStringAndReturnJson = async (options: ScanStringOptions) => {
 
   return response;
 };
+
+export class DataFormatHandlers {
+  private formats: Map<string, DataFormat> = new Map();
+
+  constructor() {
+    this.registerDefaultFormats();
+  }
+
+  private registerDefaultFormats() {
+    // JSON handler
+    this.formats.set('json', {
+      detect: (data: string) => {
+        try {
+          JSON.parse(data);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      parse: JSON.parse,
+      stringify: (data: any) => JSON.stringify(data, null, 2)
+    });
+
+    // YAML handler
+    this.formats.set('yaml', {
+      detect: (data: string) => {
+        try {
+          yaml.parse(data);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      parse: yaml.parse,
+      stringify: yaml.stringify
+    });
+
+    // XML handler
+    this.formats.set('xml', {
+      detect: (data: string) => /^\s*<[^>]+>/.test(data),
+      parse: (data: string) => {
+        const parser = new DOMParser();
+        return parser.parseFromString(data, 'text/xml');
+      },
+      stringify: (data: any) => {
+        const serializer = new XMLSerializer();
+        return serializer.serializeToString(data);
+      }
+    });
+  }
+
+  public detectFormat(data: string): string {
+    for (const [format, handler] of this.formats.entries()) {
+      if (handler.detect(data)) {
+        return format;
+      }
+    }
+    return 'string';
+  }
+
+  public getHandler(format: string): DataFormat | undefined {
+    return this.formats.get(format);
+  }
+
+  public registerFormat(name: string, handler: DataFormat) {
+    this.formats.set(name, handler);
+  }
+}
