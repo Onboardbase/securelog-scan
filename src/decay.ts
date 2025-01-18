@@ -1,113 +1,83 @@
 import Re2 from 're2';
 import { DataFormatHandlers } from './shared';
 import { RedactionConfig } from './types';
+import { defaultRedactionConfigs } from './shared/default-decay.config';
+import yaml from 'js-yaml';
+import fs from 'fs';
 
-// Extended RE2-compatible patterns optimized for performance
-const defaultRedactionConfigs: RedactionConfig = {
-  // Authentication & Security
-  password: {
-    pattern: '(?:password|passwd|pwd|secret|auth_token)[=:][^\\s&",}\\]]{3,}',
-    replacement: 'password=*****',
-    description: 'Matches password and auth token fields'
-  },
-  apiKey: {
-    pattern: '(?:api_?key|client_?secret|access_?token)[=:][^\\s&",}\\]]{3,}',
-    replacement: '[API_KEY_REDACTED]',
-    description: 'Matches API keys and tokens'
-  },
-  jwt: {
-    pattern: 'eyJ[a-zA-Z0-9_-]{10,}\\.eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{10,}',
-    replacement: '[JWT_REDACTED]',
-    description: 'Matches JWT tokens'
-  },
-  
-  // Personal Information
-  phone: {
-    pattern: '(?:\\+?\\d{1,3}[-\\.\\s]?)?\\(?\\d{3}\\)?[-\\.\\s]?\\d{3}[-\\.\\s]?\\d{4}',
-    replacement: 'XXX-XXX-XXXX',
-    description: 'Matches phone numbers'
-  },
-  email: {
-    pattern: '[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}',
-    replacement: '[EMAIL_REDACTED]',
-    description: 'Matches email addresses'
-  },
-  address: {
-    pattern: '\\d{1,5}\\s[\\w\\s,]+(?:Avenue|Lane|Road|Boulevard|Drive|Street|Ave|Dr|Rd|Blvd|Ln|St)\\.?\\s*,?\\s*[\\w\\s]+,\\s*[A-Z]{2}\\s*\\d{5}(-\\d{4})?',
-    replacement: '[ADDRESS_REDACTED]',
-    description: 'Matches US addresses'
-  },
-  
-  // Financial Information
-  creditCard: {
-    pattern: '(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\\d{3})\\d{11})',
-    replacement: '[CARD_REDACTED]',
-    description: 'Matches major credit card formats'
-  },
-  bankAccount: {
-    pattern: '\\b\\d{8,17}\\b',
-    replacement: '[BANK_ACCOUNT_REDACTED]',
-    description: 'Matches bank account numbers'
-  },
-  routingNumber: {
-    pattern: '\\b\\d{9}\\b',
-    replacement: '[ROUTING_NUMBER_REDACTED]',
-    description: 'Matches routing numbers'
-  },
-  
-  // Government IDs
-  ssn: {
-    pattern: '\\b\\d{3}-?\\d{2}-?\\d{4}\\b',
-    replacement: 'XXX-XX-XXXX',
-    description: 'Matches SSN'
-  },
-  ein: {
-    pattern: '\\b\\d{2}-?\\d{7}\\b',
-    replacement: '[EIN_REDACTED]',
-    description: 'Matches EIN'
-  },
-  passport: {
-    pattern: '\\b[A-Z]{1,2}[0-9]{6,9}\\b',
-    replacement: '[PASSPORT_REDACTED]',
-    description: 'Matches passport numbers'
-  },
-  
-  // Digital Identifiers
-  ipv4: {
-    pattern: '\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b',
-    replacement: '[IP_REDACTED]',
-    description: 'Matches IPv4 addresses'
-  },
-  ipv6: {
-    pattern: '\\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\\b',
-    replacement: '[IPv6_REDACTED]',
-    description: 'Matches IPv6 addresses'
-  },
-  mac: {
-    pattern: '\\b(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})\\b',
-    replacement: '[MAC_REDACTED]',
-    description: 'Matches MAC addresses'
-  }
-};
+process.removeAllListeners('warning');
 
-class Decay {
+interface YamlConfig {
+  patterns: RedactionConfig;
+  cache: {
+    size: number;
+  };
+}
+
+export class Decay {
   private readonly configs: RedactionConfig;
   private readonly formatHandlers: DataFormatHandlers;
   private readonly compiledPatterns: Map<string, Re2>;
   private readonly cache: Map<string, string>;
   private readonly cacheSize: number;
 
-  constructor(
-    configs: RedactionConfig = defaultRedactionConfigs,
-    cacheSize: number = 1000
-  ) {
-    this.configs = configs;
+  /**
+   * Create a new Decay instance from YAML config file or default config
+   * @param configPath Optional path to YAML config file
+   */
+  constructor(configPath?: string) {
+    const config = this.loadConfig(configPath);
+    this.configs = config.patterns;
     this.formatHandlers = new DataFormatHandlers();
     this.compiledPatterns = this.compilePatterns();
     this.cache = new Map();
-    this.cacheSize = cacheSize;
+    this.cacheSize = config.cache?.size || 1000;
   }
 
+  /**
+   * Load configuration from YAML file or use defaults
+   */
+  private loadConfig(configPath?: string): YamlConfig {
+    if (!configPath) {
+      return {
+        patterns: defaultRedactionConfigs,
+        cache: { size: 1000 }
+      };
+    }
+
+    try {
+      const fileContents = fs.readFileSync(configPath, 'utf8');
+      const config = yaml.load(fileContents) as YamlConfig;
+      
+      // Validate the loaded config
+      if (!config.patterns || typeof config.patterns !== 'object') {
+        throw new Error('Invalid config: missing or invalid patterns section');
+      }
+
+      // Validate each pattern
+      for (const [key, value] of Object.entries(config.patterns)) {
+        if (!value.pattern || !value.replacement) {
+          throw new Error(`Invalid config for pattern ${key}: missing pattern or replacement`);
+        }
+        
+        // Validate pattern can be compiled
+        try {
+          new Re2(value.pattern);
+        } catch (error: any) {
+          throw new Error(`Invalid regex pattern for ${key}: ${error.message}`);
+        }
+      }
+
+      return config;
+    } catch (error) {
+      console.error('Error loading config:', error);
+      console.warn('Falling back to default configuration');
+      return {
+        patterns: defaultRedactionConfigs,
+        cache: { size: 1000 }
+      };
+    }
+  }
   /**
    * Compiles patterns using RE2 with optimization flags
    */
@@ -262,36 +232,4 @@ function runPerformanceTest(redactor: Decay) {
   console.timeEnd('Nested redaction');
 }
 
-// Example usage
-const redactor = new Decay();
-runPerformanceTest(redactor);
-
-// Complex example with multiple data types
-const complexData = {
-  user: {
-    personal: {
-      email: "john.doe@example.com",
-      phone: "+1 (555) 123-4567",
-      ssn: "123-45-6789",
-      passport: "AB1234567",
-    },
-    financial: {
-      creditCard: "4111-1111-1111-1111",
-      bankAccount: "12345678901234",
-      routingNumber: "123456789"
-    },
-    security: {
-      password: "secret123",
-      apiKey: "sk_live_1234567890",
-      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    },
-    network: {
-      ipv4: "192.168.1.1",
-      ipv6: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-      mac: "00:1A:2B:3C:4D:5E"
-    }
-  }
-};
-
-console.log('\nComplex Example:');
-console.log(JSON.stringify(redactor.redact(complexData), null, 2));
+export const decay = (config?: string)=> new Decay(config);

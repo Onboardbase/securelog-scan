@@ -1,3 +1,4 @@
+import { YAMLMap } from "yaml";
 import { AhoCorasickCore } from "../ahocorasick";
 import { DetectorConfig } from "./detector";
 
@@ -22,6 +23,12 @@ export interface ScanStringOptions {
   maskedValue?: string;
   visibleChars?: number;
   customDetectors?: DetectorConfig[];
+}
+
+export interface DecayOptions {
+  config?: string;
+  file?: string;
+  data?: any;
 }
 
 export interface Config {

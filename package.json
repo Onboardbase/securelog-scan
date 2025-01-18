@@ -30,6 +30,7 @@
     "cli-table3": "^0.6.5",
     "commander": "^11.0.0",
     "google-auth-library": "^9.14.1",
+    "js-yaml": "^4.1.0",
     "mongodb": "^6.8.1",
     "mysql2": "^3.11.3",
     "pg": "^8.13.0",
@@ -42,6 +43,7 @@
   "homepage": "https://thesecurelog.com",
   "devDependencies": {
     "@types/ahocorasick": "^1.0.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.6.1",
     "@types/pg": "^8.11.10",
     "eslint": "^9.11.1",
