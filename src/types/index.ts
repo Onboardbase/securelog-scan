@@ -1,3 +1,4 @@
+import { YAMLMap } from "yaml";
 import { AhoCorasickCore } from "../ahocorasick";
 import { DetectorConfig } from "./detector";
 
@@ -22,6 +23,12 @@ export interface ScanStringOptions {
   maskedValue?: string;
   visibleChars?: number;
   customDetectors?: DetectorConfig[];
+}
+
+export interface DecayOptions {
+  config?: string;
+  file?: string;
+  data?: any;
 }
 
 export interface Config {
@@ -79,3 +86,19 @@ export interface AnalyzeRepositoryOptions {
   mask?: boolean;
   core: AhoCorasickCore;
 }
+
+export interface DataFormat {
+  detect: (data: string) => boolean;
+  parse: (data: string) => any;
+  stringify: (data: any) => string;
+}
+
+export type RedactionPattern = {
+  pattern: string;  // RE2 compatible pattern
+  replacement: string;
+  description?: string;
+}
+
+export type RedactionConfig = {
+  [key: string]: RedactionPattern;
+};

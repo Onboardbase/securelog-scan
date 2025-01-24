@@ -1,0 +1,27 @@
+patterns:
+  email:
+    pattern: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}'
+    replacement: '[EMAIL_REDACTED]'
+    
+  ssn:
+    pattern: '\d{3}-\d{2}-\d{4}'
+    replacement: '[SSN_REDACTED]'
+    
+  creditCard:
+    pattern: '\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}'
+    replacement: '[CREDIT_CARD_REDACTED]'
+    
+  apiKey:
+    pattern: 'sk_(test|live)_[0-9a-zA-Z]+'
+    replacement: '[API_KEY_REDACTED]'
+    
+  jwt:
+    pattern: 'eyJ[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*'
+    replacement: '[JWT_REDACTED]'
+    
+  password:
+    pattern: 'password:[^@\s]*@'
+    replacement: 'password:****@'
+
+cache:
+  size: 1000
