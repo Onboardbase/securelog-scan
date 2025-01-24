@@ -348,6 +348,7 @@ git push --force --tags
 ## How to Initialize SLS Scan as an SDK
 
 ```typescript
+// Detector Config Interface
 export interface DetectorConfig {
   regex: string | Record<string, string>;
   keywords: string[];
