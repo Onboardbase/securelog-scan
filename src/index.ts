@@ -79,7 +79,7 @@ program
   .description("Scan secrets in a string")
   .action((options: ScanStringOptions) => scanString(options));
 
-  program
+program
   .command("decay")
   .argument("[data]", "Data to decay (optional if using --file)")
   .option("--config <string>", "Path to configuration file")
@@ -87,26 +87,28 @@ program
   .description("Decay sensitive data from input or file")
   .action(async (data: string | undefined, options: DecayOptions) => {
     try {
-
       const decayer = decay(options.config);
 
       let inputData: any;
       if (options.file) {
         inputData = readInputFile(options.file);
       } else if (data) {
-          inputData = data;
+        inputData = data;
       } else {
-        throw new Error("No input provided. Use --file or provide data directly.");
+        throw new Error(
+          "No input provided. Use --file or provide data directly."
+        );
       }
 
       const redactedData = decayer.redact(inputData);
-      
-      console.log(typeof redactedData === 'object' 
-        ? JSON.stringify(redactedData, null, 2)
-        : redactedData
+
+      console.log(
+        typeof redactedData === "object"
+          ? JSON.stringify(redactedData, null, 2)
+          : redactedData
       );
     } catch (error: any) {
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
       process.exit(1);
     }
   });
