@@ -345,6 +345,18 @@ git push --force --all
 git push --force --tags
 ```
 
+## How to Initialize SLS Scan as an SDK
+
+```typescript
+import { redactSensitiveData } from "securelog-scan/dist/shared";
+
+const secretRedactionResult = redactSensitiveData("Your API KEY here", {
+  rawValue: "String you want to check for secrets here",
+  maskedValue: "****", // that is what detected secrets should be replaced with
+  visibleChars: 3, // how many characters should be visible among detected secrets
+}); // returns {rawValue: "Your returned string with secrets redacted", secrets: ["Array of secrets that was found in string"]}
+```
+
 # Contributing
 
 Feel free to contribute to this project by opening issues or submitting pull requests. Contribute to [SECRET DETECTORS](./DETECTORS.md).
