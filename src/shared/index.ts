@@ -31,13 +31,13 @@ const handleCustomDetectors = (customDetectors?: DetectorConfig[]) => {
   return parsedDetectors;
 };
 
-export const redactSensitiveData = async (
-  apiKey: string,
+/**
+ * This particular method is exposed and free to use without
+ * API key but secret details wont be logged
+ */
+export const maskAndRedactSensitiveData = async (
   options: ScanStringOptions
 ) => {
-  if (!apiKey) throw new Error("Please attach an API key");
-  await validateRequestApiKey(apiKey);
-
   const core = new AhoCorasickCore(
     handleCustomDetectors(options.customDetectors)
   );
@@ -66,6 +66,19 @@ export const redactSensitiveData = async (
   const decayer = decay();
   const redactedValues = decayer.redact(maskedValues);
 
+  return { rawValue: redactedValues, maskedValues, redactedValues, secrets };
+};
+
+export const redactSensitiveData = async (
+  apiKey: string,
+  options: ScanStringOptions
+) => {
+  if (!apiKey) throw new Error("Please attach an API key");
+  await validateRequestApiKey(apiKey);
+
+  const { rawValue, maskedValues, redactedValues, secrets } =
+    await maskAndRedactSensitiveData(options);
+
   try {
     await axios.post(`${API_BASE_URL}/log-redacted-secret`, {
       rawValue: redactedValues,
@@ -75,7 +88,7 @@ export const redactSensitiveData = async (
     console.log("Error occured logging secrets");
   }
 
-  return { rawValue: redactedValues, maskedValues, redactedValues, secrets };
+  return { rawValue, maskedValues, redactedValues, secrets };
 };
 
 export const scanStringAndReturnJson = async (options: ScanStringOptions) => {
