@@ -16,7 +16,11 @@ const API_BASE_URL = "https://api.securelog.com";
 
 const validateRequestApiKey = async (apikey: string) => {
   try {
-    const { data } = await axios.get(`${API_BASE_URL}/auth`);
+    await axios.get(`${API_BASE_URL}/auth`, {
+      headers: {
+        "x-api-key": apikey,
+      },
+    });
   } catch (error) {
     throw new Error("Invalid API Key");
   }
@@ -80,10 +84,18 @@ export const redactSensitiveData = async (
     await maskAndRedactSensitiveData(options);
 
   try {
-    await axios.post(`${API_BASE_URL}/log-redacted-secret`, {
-      rawValue: redactedValues,
-      secrets,
-    });
+    await axios.post(
+      `${API_BASE_URL}/log-redacted-secret`,
+      {
+        rawValue: redactedValues,
+        secrets,
+      },
+      {
+        headers: {
+          "x-api-key": apiKey,
+        },
+      }
+    );
   } catch (error) {
     console.log("Error occured logging secrets");
   }
