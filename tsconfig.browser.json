@@ -3,8 +3,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "outDir": "./dist/browser",
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"]
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["src"]
 }

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "outDir": "./dist/cjs",
-    "target": "ES2022"
+    "target": "ESNext"
   },
   "include": ["src"]
 }
