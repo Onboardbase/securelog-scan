@@ -1,4 +1,4 @@
-import Re2 from "re2";
+import { CrossRegex as Re2 } from '../../regex.polyfill';
 import { GoogleAuth } from "google-auth-library";
 import { Detector, ScanResult } from "../../types/detector";
 

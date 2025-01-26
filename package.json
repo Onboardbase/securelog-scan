@@ -2,13 +2,15 @@
   "name": "securelog-scan",
   "version": "3.0.21",
   "description": "A CLI tool to scan codebases for potential secrets.",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "browser": "dist/browser/index.js",
   "author": {
     "name": "Onboardbase",
     "url": "https://github.com/onboardbase"
   },
   "bin": {
-    "sls": "dist/index.js"
+    "sls": "dist/cjs/index.js"
   },
   "files": [
     "dist",
@@ -16,9 +18,12 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:cjs && npm run build:esm && npm run build:browser",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:browser": "tsc -p tsconfig.browser.json",
     "prepublishOnly": "npm run build",
-    "start": "node dist/index.js",
+    "start": "node dist/cjs/index.js",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .ts"
   },

@@ -1,4 +1,4 @@
-import Re2 from "re2";
+import { CrossRegex as Re2 } from '../../regex.polyfill';
 import mysql from "mysql2";
 import util from "util";
 import { Detector, ScanResult } from "../../types/detector";

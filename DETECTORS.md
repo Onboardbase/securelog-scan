@@ -128,7 +128,7 @@ mkdir src/detectors/your-service-name
 2. Implementation template:
 
 ```ts
-import Re2 from "re2";
+import { crossRegex as Re2 } from '../../util';
 import { Detector, ScanResult } from "../../types/detector";
 import { surroundWithGroups } from "../../regexHandler";
 import { httpClient } from "../../util";
@@ -143,7 +143,7 @@ const scan = async (
   verify: boolean | undefined,
   data: string
 ): Promise<ScanResult | null> => {
-  const matches = data.matchAll(keyPattern);
+  const matches = data.matchAll(keyPattern as unknown as RegExp);
   const result: ScanResult = {
     detectorType: "YOUR_SERVICE",
     verified: false,

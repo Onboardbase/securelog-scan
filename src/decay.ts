@@ -1,4 +1,4 @@
-import Re2 from 're2';
+import { CrossRegex as Re2 } from './regex.polyfill';
 import { DataFormatHandlers } from './shared';
 import { RedactionConfig } from './types';
 import { defaultRedactionConfigs } from './shared/default-decay.config';
@@ -152,7 +152,7 @@ export class Decay {
     for (const [key, pattern] of sortedPatterns) {
       const replacement = this.configs[key].replacement;
       try {
-        redactedText = redactedText.replace(pattern, replacement);
+        redactedText = redactedText.replace(pattern as unknown as RegExp, replacement);
       } catch (error) {
         console.warn(`Pattern ${key} failed:`, error);
       }

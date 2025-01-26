@@ -1,4 +1,4 @@
-import Re2 from "re2";
+import { CrossRegex as Re2 } from '../../regex.polyfill';
 import { surroundWithGroups } from "../../regexHandler";
 import { makeGitLabRequest } from "../../analyzers/gitlab";
 import { Detector, ScanResult } from "../../types/detector";

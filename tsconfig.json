@@ -1,23 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationDir": "./dist",
     "strict": true,
+    "target": "ESNext",
+    "module": "NodeNext",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"],
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true
+    "noEmitOnError": true,
+    "sourceMap": true
   },
-  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import Re2 from "re2";
+import { CrossRegex as Re2 } from './regex.polyfill';
 import { DetectorConfig, Detector, ScanResult } from "./types/detector";
 
 /**
@@ -65,25 +65,25 @@ const validateDetectorConfig = (config: DetectorConfig): void => {
  * @param config - The custom detector configuration.
  * @returns A map of regex patterns for each keyword or group.
  */
-const buildKeyPatterns = (config: DetectorConfig): Record<string, Re2> => {
+const buildkeyPattern = (config: DetectorConfig): Record<string, Re2> => {
   const { regex, keywords, detectorType, group } = config;
-  const keyPatterns: Record<string, Re2> = {};
+  const keyPattern: Record<string, Re2> = {};
 
   if (typeof regex === "object") {
     for (const [key, value] of Object.entries(regex)) {
-      keyPatterns[key] = new Re2(
+      keyPattern[key] = new Re2(
         group ? surroundWithGroups(group) + value : value,
         "gi"
       );
     }
   } else if (typeof regex === "string") {
-    keyPatterns[detectorType] = new Re2(
+    keyPattern[detectorType] = new Re2(
       group ? surroundWithGroups(group) + regex : regex,
       "gi"
     );
   }
 
-  return keyPatterns;
+  return keyPattern;
 };
 
 /**
@@ -100,15 +100,15 @@ export const buildCustomDetectors = (
     // Validate the custom detector config
     validateDetectorConfig(config);
 
-    const keyPatterns = buildKeyPatterns(config);
+    const keyPattern= buildkeyPattern(config);
 
     // Define the scanning function
     const scan = async (
       verify: boolean | undefined,
       data: string
     ): Promise<ScanResult | null> => {
-      for (const [tokenType, regex] of Object.entries(keyPatterns)) {
-        const matches = data.matchAll(regex);
+      for (const [tokenType, regex] of Object.entries(keyPattern)) {
+        const matches = data.matchAll(regex as unknown as RegExp);
 
         for (const match of matches) {
           if (!match) continue;

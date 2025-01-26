@@ -1,4 +1,4 @@
-import Re2 from "re2";
+import { CrossRegex as Re2 } from '../../regex.polyfill';
 import { URLSearchParams } from "url";
 import { Detector, ScanResult } from "../../types/detector";
 import { httpClient } from "../../util";

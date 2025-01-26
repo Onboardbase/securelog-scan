@@ -1,4 +1,4 @@
-import Re2 from "re2";
+import { CrossRegex as Re2 } from '../../regex.polyfill';
 import { STSClient, GetCallerIdentityCommand } from "@aws-sdk/client-sts";
 import { Detector, ScanResult } from "../../types/detector";
 
