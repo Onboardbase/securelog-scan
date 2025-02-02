@@ -345,35 +345,6 @@ git push --force --all
 git push --force --tags
 ```
 
-## How to Initialize SLS Scan as an SDK
-
-```typescript
-// Detector Config Interface
-export interface DetectorConfig {
-  regex: string | Record<string, string>;
-  keywords: string[];
-  detectorType: string;
-  group?: string[];
-}
-
-import { redactSensitiveData } from "securelog-scan/dist/shared";
-
-const secretRedactionResult = redactSensitiveData("Your API KEY here", {
-  rawValue: "String you want to check for secrets here",
-  maskedValue: "*", // that is what detected secrets should be replaced with
-  visibleChars: 3, // how many characters should be visible among detected secrets
-
-  // An Array of DetectorConfig, example below
-  customDetectors: [
-    {
-      regex: "\\b(FLWSECK-[0-9a-z]{32}-X)\\b",
-      detectorType: "Flutterwave",
-      keywords: ["FLWSECK-"],
-    },
-  ],
-}); // returns {rawValue: "Your returned string with secrets redacted", secrets: ["Array of secrets that was found in string"]}
-```
-
 # Contributing
 
 Feel free to contribute to this project by opening issues or submitting pull requests. Contribute to [SECRET DETECTORS](./DETECTORS.md).
