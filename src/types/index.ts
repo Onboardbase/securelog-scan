@@ -23,6 +23,7 @@ export interface ScanStringOptions {
   maskedValue?: string;
   visibleChars?: number;
   customDetectors?: DetectorConfig[];
+  maskSecretRawValue?: boolean;
 }
 
 export interface DecayOptions {
@@ -94,10 +95,10 @@ export interface DataFormat {
 }
 
 export type RedactionPattern = {
-  pattern: string;  // RE2 compatible pattern
+  pattern: string; // RE2 compatible pattern
   replacement: string;
   description?: string;
-}
+};
 
 export type RedactionConfig = {
   [key: string]: RedactionPattern;

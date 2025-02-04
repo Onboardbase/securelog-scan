@@ -53,6 +53,11 @@ export const maskAndRedactSensitiveData = async (
       const { scan } = detector;
       const scanResponse = await scan(false, options.rawValue as string);
       if (scanResponse && scanResponse.rawValue) {
+        /***
+         * this replaces the secrets in the string to a masked one should incase there
+         * are multiple secrets in the string, it replaces them one by one based on how
+         * many secrets was detected
+         */
         modifiedValue = modifiedValue?.replaceAll(
           scanResponse.rawValue as string,
           maskString(scanResponse.rawValue as string, {
@@ -60,6 +65,16 @@ export const maskAndRedactSensitiveData = async (
             visibleChars: options.visibleChars,
           })
         );
+
+        /**
+         * this masks the rawValue thats inside the scanResult based on the user option
+         */
+        if (options.maskSecretRawValue) {
+          scanResponse.rawValue = maskString(scanResponse.rawValue as string, {
+            maskValue: options.maskedValue,
+            visibleChars: options.visibleChars,
+          });
+        }
 
         return scanResponse;
       }
