@@ -6,7 +6,7 @@
 import axios from "axios";
 import { AhoCorasickCore } from "../ahocorasick";
 import { decay } from "../decay";
-import { buildCustomDetectors } from "../regexHandler";
+import { buildCustomDetectors, validateDetectorConfig } from "../regexHandler";
 import { DataFormat, ScanStringOptions } from "../types";
 import { DetectorConfig } from "../types/detector";
 import { maskString } from "../util";
@@ -203,3 +203,5 @@ export class DataFormatHandlers {
     this.formats.set(name, handler);
   }
 }
+
+export const validateCustomDetectorConfig = validateDetectorConfig;
