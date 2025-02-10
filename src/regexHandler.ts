@@ -32,7 +32,7 @@ export const isWhitelisted = (input: string): boolean => {
  * Validates a custom detector configuration and throws detailed errors if invalid.
  * @param config - The custom detector configuration to validate.
  */
-const validateDetectorConfig = (config: DetectorConfig): void => {
+export const validateDetectorConfig = (config: DetectorConfig): void => {
   const { regex, keywords, detectorType, group } = config;
   const errors: string[] = [];
 
